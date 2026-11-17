@@ -370,10 +370,10 @@ def metrics(n_samples: int = 500, model: str = "perfect copy of the data", seed:
 # ===================================================================================== registry for the app
 TABS = [
     ("Divergences", divergences, 1, "Route and objective: which divergence does training minimise?"),
-    ("Language-model decoding", decoding, 4, "Sampler: the same model, different decoding rules."),
+    ("Decoding", decoding, 4, "Sampler: the same model, different decoding rules."),
     ("GAN critics", gan_divergences, 6, "Objective: what an adversarial critic measures."),
-    ("Score and Langevin", langevin, 7, "Sampler: sampling with only the score."),
-    ("Diffusion sampler", diffusion, 9, "Sampler: forward noising and reverse sampling."),
-    ("Post-training tilt", tilt, 11, "Systems: RLHF/DPO/GRPO as a tilt of the reference."),
-    ("Evaluation metrics", metrics, 10, "Evaluation: what FID, precision and recall see."),
+    ("Langevin", langevin, 7, "Sampler: sampling with only the score."),
+    ("Diffusion", diffusion, 9, "Sampler: forward noising and reverse sampling."),
+    ("Post-training", tilt, 11, "Systems: RLHF/DPO/GRPO as a tilt of the reference."),
+    ("Metrics", metrics, 10, "Evaluation: what FID, precision and recall see."),
 ]

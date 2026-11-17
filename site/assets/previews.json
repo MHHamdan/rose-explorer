@@ -7,7 +7,7 @@
   "caption": "Forward KL (what maximum likelihood minimises): mean +0.00, sd 2.12, KL(p‖q) = 0.421 nats. It must put mass wherever the data are, so it spreads over both modes and puts mass between them where there are no data."
  },
  {
-  "tab": "Language-model decoding",
+  "tab": "Decoding",
   "lead": "Sampler: the same model, different decoding rules.",
   "chapter": 4,
   "image": "preview_2.png",
@@ -21,28 +21,28 @@
   "caption": "At shift 1.50: JS = 0.693 nats (max log 2 = 0.693), W1 = 1.500."
  },
  {
-  "tab": "Score and Langevin",
+  "tab": "Langevin",
   "lead": "Sampler: sampling with only the score.",
   "chapter": 7,
   "image": "preview_4.png",
   "caption": "Share of samples in the right-hand well: 0.46 (the target has 0.50)."
  },
  {
-  "tab": "Diffusion sampler",
+  "tab": "Diffusion",
   "lead": "Sampler: forward noising and reverse sampling.",
   "chapter": 9,
   "image": "preview_5.png",
   "caption": "Samples within 3 sd of a mode: 97%; modes covered: 8/8; share in the upper half (the 'class' that guidance favours): 40%."
  },
  {
-  "tab": "Post-training tilt",
+  "tab": "Post-training",
   "lead": "Systems: RLHF/DPO/GRPO as a tilt of the reference.",
   "chapter": 11,
   "image": "preview_6.png",
   "caption": "β = 0.50: KL to the reference 0.47 nats; probability of a correct answer 0.25 → 0.71; pass@16: 0.990 → 1.000."
  },
  {
-  "tab": "Evaluation metrics",
+  "tab": "Metrics",
   "lead": "Evaluation: what FID, precision and recall see.",
   "chapter": 10,
   "image": "preview_7.png",

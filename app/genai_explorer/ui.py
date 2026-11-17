@@ -61,12 +61,12 @@ def _start_tab():
 | Tab | Stage of the chain | What you will see |
 |---|---|---|
 | Divergences | route, objective | why likelihood training covers every mode and adversarial training may not |
-| Language-model decoding | sampler | the same model, greedy vs temperature vs top-p |
+| Decoding | sampler | the same model, greedy vs temperature vs top-p |
 | GAN critics | objective | why the original GAN loses its gradient and the Wasserstein critic does not |
-| Score and Langevin | sampler | sampling from a density you cannot normalise |
-| Diffusion sampler | sampler | forward noising, the reverse sampler, steps, stochasticity and guidance |
-| Post-training tilt | systems | RLHF/DPO as a re-weighting of the base model, and reward over-optimisation |
-| Evaluation metrics | evaluation | what FID, precision and recall can and cannot see |
+| Langevin | sampler | sampling from a density you cannot normalise |
+| Diffusion | sampler | forward noising, the reverse sampler, steps, stochasticity and guidance |
+| Post-training | systems | RLHF/DPO as a re-weighting of the base model, and reward over-optimisation |
+| Metrics | evaluation | what FID, precision and recall can and cannot see |
 
 ### The eleven notebook chapters
 Every equation in the survey, explained twice (in plain words and as a refresher) and checked in code.
@@ -90,7 +90,7 @@ def build() -> gr.Blocks:
     with gr.Blocks(**kwargs) as demo:
         md(INTRO)
         with gr.Tabs():
-            with gr.Tab("Start here"):
+            with gr.Tab("Start"):
                 _start_tab()
 
             with gr.Tab("Divergences"):
@@ -106,7 +106,7 @@ def build() -> gr.Blocks:
                         p1 = gr.Plot(show_label=False); t1 = md()
                 _wire([sep, w], demos.divergences, p1, t1, demo)
 
-            with gr.Tab("Language-model decoding"):
+            with gr.Tab("Decoding"):
                 md("**Sampler.** A language model gives a probability for every next word; a *decoding rule* "
                             "decides what to emit. A tiny bigram model trained on a few sentences shows the effect.")
                 with gr.Row():
@@ -131,7 +131,7 @@ def build() -> gr.Blocks:
                         p3 = gr.Plot(show_label=False); t3 = md()
                 _wire([sh], demos.gan_divergences, p3, t3, demo)
 
-            with gr.Tab("Score and Langevin"):
+            with gr.Tab("Langevin"):
                 md("**Sampler.** Energy-based and score-based models know the slope of $\\log p$ but not its "
                             "normaliser. Langevin dynamics samples with the slope alone.")
                 with gr.Row():
@@ -145,7 +145,7 @@ def build() -> gr.Blocks:
                         p4 = gr.Plot(show_label=False); t4 = md()
                 _wire([st, ns, bar, sd4], demos.langevin, p4, t4, demo)
 
-            with gr.Tab("Diffusion sampler"):
+            with gr.Tab("Diffusion"):
                 md("**Sampler.** A diffusion model learns to undo noise. The noise predictor here is exact, "
                             "so what you change is only the *sampler*: the number of steps, how much fresh noise each "
                             "step injects ($\\eta$), and classifier-free guidance.")
@@ -161,7 +161,7 @@ def build() -> gr.Blocks:
                         p5 = gr.Plot(show_label=False); t5 = md()
                 _wire([tv, nfe, eta, gw, sd5], demos.diffusion, p5, t5, demo)
 
-            with gr.Tab("Post-training tilt"):
+            with gr.Tab("Post-training"):
                 md("**Systems.** RLHF, DPO and GRPO all target the same optimum: the base model re-weighted by "
                             "$e^{r/\\beta}$. Twelve possible answers, three of them correct.")
                 with gr.Row():
@@ -174,7 +174,7 @@ def build() -> gr.Blocks:
                         p6 = gr.Plot(show_label=False); t6 = md()
                 _wire([beta, err, kk], demos.tilt, p6, t6, demo)
 
-            with gr.Tab("Evaluation metrics"):
+            with gr.Tab("Metrics"):
                 md("**Evaluation.** FID is the most reported number in image generation. Compare four "
                             "generators against the same real data and see what it, precision and recall each report.")
                 with gr.Row():

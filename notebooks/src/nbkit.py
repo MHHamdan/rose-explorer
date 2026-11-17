@@ -34,9 +34,9 @@ GITHUB_SLUG = "MHHamdan/rose-explorer"
 COLAB_URL = "https://colab.research.google.com/github/{slug}/blob/main/notebooks/{name}"
 
 # chapter -> explorer tab that illustrates it (app/genai_explorer/demos.py TABS)
-EXPLORER_TABS = {1: "Divergences", 2: "Divergences", 4: "Language-model decoding", 6: "GAN critics",
-                 7: "Score and Langevin", 8: "Diffusion sampler", 9: "Diffusion sampler", 10: "Evaluation metrics",
-                 11: "Post-training tilt"}
+EXPLORER_TABS = {1: "Divergences", 2: "Divergences", 4: "Decoding", 6: "GAN critics",
+                 7: "Langevin", 8: "Diffusion", 9: "Diffusion", 10: "Metrics",
+                 11: "Post-training"}
 
 NOTATION = r"""
 | Symbol | Meaning |
