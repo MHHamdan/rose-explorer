@@ -5,7 +5,7 @@ REPO_SLUG = "MHHamdan/rose-explorer"   # public repo holding notebooks/, app/ an
 BRANCH = "main"
 # URL of a running copy of the app (a Hugging Face Space: `cd app && gradio deploy`). Empty until deployed;
 # the landing page then shows the preview gallery instead of the live app.
-SPACE_URL = ""
+SPACE_URL = "https://mhamdan-rose-explorer.hf.space"
 
 # (number, notebook file, title, one-line summary) -- tests/test_explorer.py checks these against notebooks/coverage.json
 CHAPTERS = [

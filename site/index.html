@@ -116,52 +116,11 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
 
 <section id="explorer"><div class="wrap">
   <h2>The explorer</h2>
-  <p class="sub">Seven interactive demos, one idea each, with the knobs that matter. Below is what each tab shows at its default settings, rendered from the app's own code; run the app to move the knobs.</p>
+  <p class="sub">The app, running live. Move a slider: the figure and the numbers under it update. Each tab names the notebook chapter that derives and verifies what it shows.</p>
   <div class="app-shell">
     <div class="app-bar"><i></i><i></i><i></i><span>ROSE explorer · seven tabs, one knob each</span></div>
-    <div class="gallery">
-      <figure class="preview">
-        <img src="assets/preview_1.png" alt="Divergences: Forward KL (what maximum likelihood minimises): mean +0.00, sd 2.12, KL(p‖q) = 0.421 nats. It must put mass wherever the data are, so it spreads over both modes and puts mass between them where there are no data." loading="lazy">
-        <figcaption><b>Divergences</b> <span class="lead-tag">Route and objective: which divergence does training minimise?</span>
-          <p>Forward KL (what maximum likelihood minimises): mean +0.00, sd 2.12, KL(p‖q) = 0.421 nats. It must put mass wherever the data are, so it spreads over both modes and puts mass between them where there are no data.</p>
-          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/01_foundations_divergences.ipynb" target="_blank" rel="noopener">Chapter 1: Probability, entropy and divergences →</a></figcaption>
-      </figure>
-      <figure class="preview">
-        <img src="assets/preview_2.png" alt="Language-model decoding: Three continuations of &quot;the&quot; under temperature 1.00, top-k off, top-p 1.00:" loading="lazy">
-        <figcaption><b>Language-model decoding</b> <span class="lead-tag">Sampler: the same model, different decoding rules.</span>
-          <p>Three continuations of &quot;the&quot; under temperature 1.00, top-k off, top-p 1.00:</p>
-          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/04_autoregressive_models.ipynb" target="_blank" rel="noopener">Chapter 4: Autoregressive models →</a></figcaption>
-      </figure>
-      <figure class="preview">
-        <img src="assets/preview_3.png" alt="GAN critics: At shift 1.50: JS = 0.693 nats (max log 2 = 0.693), W1 = 1.500." loading="lazy">
-        <figcaption><b>GAN critics</b> <span class="lead-tag">Objective: what an adversarial critic measures.</span>
-          <p>At shift 1.50: JS = 0.693 nats (max log 2 = 0.693), W1 = 1.500.</p>
-          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/06_generative_adversarial_networks.ipynb" target="_blank" rel="noopener">Chapter 6: Generative adversarial networks →</a></figcaption>
-      </figure>
-      <figure class="preview">
-        <img src="assets/preview_4.png" alt="Score and Langevin: Share of samples in the right-hand well: 0.46 (the target has 0.50)." loading="lazy">
-        <figcaption><b>Score and Langevin</b> <span class="lead-tag">Sampler: sampling with only the score.</span>
-          <p>Share of samples in the right-hand well: 0.46 (the target has 0.50).</p>
-          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/07_energy_based_models_and_score_matching.ipynb" target="_blank" rel="noopener">Chapter 7: Energy-based models and score matching →</a></figcaption>
-      </figure>
-      <figure class="preview">
-        <img src="assets/preview_5.png" alt="Diffusion sampler: Samples within 3 sd of a mode: 97%; modes covered: 8/8; share in the upper half (the &#x27;class&#x27; that guidance favours): 40%." loading="lazy">
-        <figcaption><b>Diffusion sampler</b> <span class="lead-tag">Sampler: forward noising and reverse sampling.</span>
-          <p>Samples within 3 sd of a mode: 97%; modes covered: 8/8; share in the upper half (the &#x27;class&#x27; that guidance favours): 40%.</p>
-          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/09_discrete_diffusion_ddim_guidance_flow_matching.ipynb" target="_blank" rel="noopener">Chapter 9: DDPM, DDIM, guidance and flow matching →</a></figcaption>
-      </figure>
-      <figure class="preview">
-        <img src="assets/preview_6.png" alt="Post-training tilt: β = 0.50: KL to the reference 0.47 nats; probability of a correct answer 0.25 → 0.71; pass@16: 0.990 → 1.000." loading="lazy">
-        <figcaption><b>Post-training tilt</b> <span class="lead-tag">Systems: RLHF/DPO/GRPO as a tilt of the reference.</span>
-          <p>β = 0.50: KL to the reference 0.47 nats; probability of a correct answer 0.25 → 0.71; pass@16: 0.990 → 1.000.</p>
-          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/11_systems_post_training_agents.ipynb" target="_blank" rel="noopener">Chapter 11: Post-training, retrieval and agents →</a></figcaption>
-      </figure>
-      <figure class="preview">
-        <img src="assets/preview_7.png" alt="Evaluation metrics: At N = 500: FID 0.010, precision 0.98, recall 0.98." loading="lazy">
-        <figcaption><b>Evaluation metrics</b> <span class="lead-tag">Evaluation: what FID, precision and recall see.</span>
-          <p>At N = 500: FID 0.010, precision 0.98, recall 0.98.</p>
-          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/10_evaluation_metrics.ipynb" target="_blank" rel="noopener">Chapter 10: Evaluation metrics →</a></figcaption>
-      </figure>
+    <div class="live">
+    <iframe class="app-frame" src="https://mhamdan-rose-explorer.hf.space" title="ROSE explorer" allow="clipboard-write" loading="lazy"></iframe>
     </div>
     <div class="run">Run it yourself: <code>pip install -r app/requirements.txt && python app/app.py</code>
       <span>· or deploy <code>app/</code> as a Hugging Face Space with <code>gradio deploy</code></span></div>
