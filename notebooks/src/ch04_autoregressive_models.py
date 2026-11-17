@@ -1,0 +1,285 @@
+"""Chapter 4: autoregressive models (main paper §3.3, §5.1, §7; Supplement S1.6, S4.1, S4.7, S5, S10)."""
+from nbkit import Chapter
+
+
+def build():
+    c = Chapter(
+        4, "autoregressive_models", "Autoregressive models: the chain rule, teacher forcing and perplexity",
+        summary=(
+            "Autoregressive models are the route that computes the likelihood exactly by factorising it one element "
+            "at a time, and every large language model is one. This chapter verifies the chain rule and what follows "
+            "from it: training is a sum of classification losses with the true prefix (teacher forcing), the "
+            "pretraining objective of a language model is this log-likelihood (maximised) and perplexity reports it exactly, sampling "
+            "costs one network evaluation per element, the key--value cache that makes decoding affordable has a "
+            "predictable size, and speculative decoding speeds decoding up without changing the sampled distribution."),
+        prerequisites="Chapter 2 (maximum likelihood as forward KL)",
+        paper_sections="main paper §3.3, §5.1, §7.1; Supplement S1.6, S4.1, S4.7 (LLMs), S5.1, S10.1",
+    )
+
+    c.section("The factorisation and what it costs", (
+        "The chain rule is an identity, true for every distribution and every ordering; the modelling choice is in "
+        "how the conditionals are parameterised. The checks use a joint distribution over three symbols given as an "
+        "explicit table, so every conditional is an exact ratio of sums."))
+
+    c.eq(
+        ["EQ-M-011", "EQ-S1-020", "EQ-S4-001", "EQ-S4-050", "EQ-S10-001"], "The chain rule and the pretraining objective",
+        r"\log p_\theta(\mathbf x)=\sum_{i=1}^{N}\log p_\theta(x_i\mid\mathbf x_{<i});\qquad "
+        r"\mathcal L_{\mathrm{PT}}(\theta)=\mathbb E_{\mathbf x\sim p_{\mathrm{data}}}\Big[\sum_{i=1}^{N}\log p_\theta(x_i\mid\mathbf x_{<i})\Big]",
+        plain=(
+            "The probability of a whole sequence equals the probability of its first element, times the probability "
+            "of the second given the first, times the probability of the third given the first two, and so on. This "
+            "is always true, for any order you choose to read the elements in. An autoregressive model is a network "
+            "that outputs each of those conditional probabilities in turn, so it can compute the exact probability of "
+            "any sequence. A language model's pretraining objective is nothing more than the average of this "
+            "quantity over the training corpus: by Chapter 2 it is maximum likelihood, and therefore minimises the "
+            "forward KL between the corpus and the model over whole sequences."),
+        refresher=(
+            "The factorisation is the definition of conditional probability applied $N-1$ times; it needs no "
+            "assumption beyond $p(\\mathbf x_{<i})>0$ along the sequence. The ordering is a design decision (raster "
+            "for pixels, temporal for audio and text, coarse-to-fine for VAR), and the modelling assumption lives "
+            "entirely in the parameterisation of the conditionals: a softmax over 256 intensities, a discretised "
+            "logistic mixture, or $5\\times10^4$ byte-pair tokens. Supplement S10 (EQ-S10-001) writes the LLM "
+            "pretraining objective in this form (a log-likelihood, maximised) and notes that nothing in it distinguishes GPT-3 from a character-level "
+            "recurrent model except the parameterisation, tokeniser and scale. The check (ported from "
+            "`chain_rule_factorisation`) verifies the identity on a random joint table and that the expected "
+            "sum of conditionals equals the expected log-joint, i.e. the pretraining objective is minus the "
+            "cross-entropy of sequences."),
+        code='''P = rng.dirichlet(np.ones(27)).reshape(3, 3, 3)          # a joint distribution over three 3-ary variables
+def log_conditionals(x):
+    p1 = P.sum((1, 2))[x[0]]
+    p2 = P[x[0]].sum(1)[x[1]] / P[x[0]].sum()
+    p3 = P[x[0], x[1], x[2]] / P[x[0], x[1]].sum()
+    return math.log(p1), math.log(p2), math.log(p3)
+x = (2, 0, 1)
+check("sum of log conditionals = log of the joint", *close(sum(log_conditionals(x)), math.log(P[x]), 1e-12))
+# any ordering: factorise in the order (x3, x1, x2)
+q1 = P.sum((0, 1))[x[2]]; q2 = P[:, :, x[2]].sum(1)[x[0]] / P[:, :, x[2]].sum(); q3 = P[x[0], x[1], x[2]] / P[x[0], :, x[2]].sum()
+check("the factorisation holds for another ordering of the same variables", *close(math.log(q1 * q2 * q3), math.log(P[x]), 1e-12))
+# pretraining objective (maximised) = E_{p_data}[sum_i log p(x_i | x_<i)] = -H(p_data) when p_theta = p_data; with a different model it is -cross-entropy
+Q = rng.dirichlet(np.ones(27)).reshape(3, 3, 3)                 # a model p_theta
+def log_cond_model(x):
+    return math.log(Q.sum((1, 2))[x[0]]) + math.log(Q[x[0]].sum(1)[x[1]] / Q[x[0]].sum()) + math.log(Q[x[0], x[1], x[2]] / Q[x[0], x[1]].sum())
+xs = [(a, b, d) for a in range(3) for b in range(3) for d in range(3)]
+L_pt = sum(P[x] * log_cond_model(x) for x in xs)
+check("pretraining objective = -cross-entropy(p_data, p_theta) over whole sequences", *close(L_pt, np.sum(P * np.log(Q)), 1e-12))
+H = -np.sum(P * np.log(P)); KL = np.sum(P * (np.log(P) - np.log(Q)))
+check("...= -H(p_data) - KL(p_data || p_theta): maximising it minimises forward KL", *close(L_pt, -H - KL, 1e-12))''')
+
+    c.eq(
+        "EQ-S4-002", "Teacher forcing: the sequence loss is a sum of independent classification losses",
+        r"-\log p_\theta(\mathbf x)=\sum_{i=1}^{N}\big(-\log p_\theta(x_i\mid\mathbf x_{<i})\big),\qquad "
+        r"\nabla_\theta\big(-\log p_\theta(\mathbf x)\big)=\sum_i\nabla_\theta\big(-\log p_\theta(x_i\mid\mathbf x_{<i})\big)",
+        plain=(
+            "To train the model you do not need to generate anything. Feed it the true sequence, read off at every "
+            "position the probability it gave to the true next element, and add up the negative logs. Each position "
+            "is an ordinary classification problem ('which element comes next?') whose input is the *true* prefix, "
+            "not the model's own guesses; that is what 'teacher forcing' means. All $N$ positions can be scored in "
+            "one parallel pass with a causal mask, which is why training a language model is so much cheaper than "
+            "sampling from it."),
+        refresher=(
+            "Williams and Zipser (1989) for recurrent networks. The $N$ terms share parameters, so they are "
+            "independent as losses but not as functions of $\\theta$; the gradient is the sum of per-position "
+            "gradients. The gap between training (true prefixes) and generation (own prefixes) is exposure bias; "
+            "the paper notes that likelihood and sample quality can therefore diverge. The check builds a tiny "
+            "causal transformer-style model (an embedding, a causal attention layer and a softmax head) in torch, "
+            "and verifies that the sequence NLL from one masked pass equals the sum of $N$ separate "
+            "next-token classification losses computed with the true prefixes, and that the gradients agree."),
+        code='''torch.manual_seed(0)
+Vv, d, N = 5, 8, 6
+emb = torch.nn.Embedding(Vv, d); pos = torch.nn.Parameter(torch.randn(N, d) * 0.1)
+attn = torch.nn.MultiheadAttention(d, 2, batch_first=True); head = torch.nn.Linear(d, Vv)
+params = list(emb.parameters()) + [pos] + list(attn.parameters()) + list(head.parameters())
+def logits_causal(seq):                       # one parallel pass with a causal mask: position i sees x_<=i
+    T_ = seq.shape[1]; h = emb(seq) + pos[:T_]
+    mask = torch.triu(torch.ones(T_, T_, dtype=torch.bool), 1)
+    out, _ = attn(h, h, h, attn_mask=mask, need_weights=False)
+    return head(out)
+seq = torch.randint(0, Vv, (1, N))
+x_in, x_tgt = seq[:, :-1], seq[:, 1:]
+nll_seq = torch.nn.functional.cross_entropy(logits_causal(x_in).reshape(-1, Vv), x_tgt.reshape(-1), reduction="sum")
+nll_pos = sum(torch.nn.functional.cross_entropy(logits_causal(x_in[:, :i + 1])[:, -1], x_tgt[:, i]) for i in range(N - 1))
+check("masked parallel pass = sum of the N-1 separate next-token losses with the true prefixes", *close(nll_seq.item(), nll_pos.item(), 1e-5))
+g_seq = torch.autograd.grad(nll_seq, params, allow_unused=True)
+g_pos = torch.autograd.grad(nll_pos, params, allow_unused=True)
+gap = max((a - b).abs().max().item() for a, b in zip(g_seq, g_pos) if a is not None and b is not None)
+check("gradients agree: the sequence gradient is the sum of per-position gradients", gap < 1e-5, f"max |diff| = {gap:.1e}")''')
+
+    c.eq(
+        "EQ-S4-003", "Receptive fields, quadratic attention and the causal mask",
+        r"\mathrm{RF}_{\text{dilated}}=1+\sum_{\ell}d_\ell\quad(=1024\text{ for dilations }1,2,\dots,512);\qquad "
+        r"\text{self-attention: }O(N^2)\text{ pairs};\qquad M_{ij}=-\infty\ \text{for }j>i",
+        plain=(
+            "A convolutional autoregressive model can only condition on the elements its filters reach: the "
+            "receptive field. Stacking dilated convolutions with dilations $1,2,4,\\dots,512$ makes each layer skip "
+            "further back, and the total reach is one plus the sum of the dilations, 1024 for that stack (WaveNet "
+            "repeats the stack several times to reach further). Attention instead lets every position look at every "
+            "earlier one, at a cost that grows with the square of the length; the causal mask sets the attention "
+            "*score* of every later position to $-\\infty$, so after the softmax its weight is exactly 0, which is what keeps "
+            "the factorisation valid."),
+        refresher=(
+            "Van den Oord et al. (2016); Vaswani et al. (2017). For a stack of causal convolutions with kernel size 2 "
+            "and dilations $d_\\ell$, each layer adds $d_\\ell$ to the reach, hence $1+\\sum d_\\ell$; with $k$-taps "
+            "the increment is $(k-1)d_\\ell$. The mask must be strictly upper-triangular: masking the diagonal too "
+            "would hide the current input. The checks compute the receptive field of a dilated causal stack by "
+            "propagating an impulse through actual `conv1d` layers, verify the $N^2$ count of attention pairs "
+            "against the causal count $N(N+1)/2$, and verify that a masked attention output at position $i$ does not "
+            "change when later inputs change."),
+        code='''dils = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512]
+check("1 + sum of dilations = 1024 for the WaveNet stack", 1 + sum(dils) == 1024)
+# measure the receptive field of a kernel-2 dilated causal stack by an impulse response
+L = 2048
+convs = [torch.nn.Conv1d(1, 1, 2, dilation=dd, bias=False) for dd in dils]
+for cv in convs: torch.nn.init.ones_(cv.weight)
+def forward(xsig):
+    h = xsig
+    for cv, dd in zip(convs, dils):
+        h = cv(torch.nn.functional.pad(h, (dd, 0)))      # left padding = causal
+    return h
+base = forward(torch.zeros(1, 1, L))
+reach = 0
+for lag in range(0, 1100):                               # perturb input at position L-1-lag; does output at L-1 change?
+    xsig = torch.zeros(1, 1, L); xsig[0, 0, L - 1 - lag] = 1.0
+    if (forward(xsig)[0, 0, -1] - base[0, 0, -1]).abs() > 0: reach = lag + 1
+check("measured receptive field of the dilated causal stack = 1024", reach == 1024, f"measured {reach}")
+Nn = 37
+causal = torch.tril(torch.ones(Nn, Nn))
+check("attention scores: N^2 pairs in total, N(N+1)/2 of them visible under a causal mask",
+      causal.numel() == Nn**2 and int(causal.sum()) == Nn * (Nn + 1) // 2, f"{int(causal.sum())} of {causal.numel()} for N = {Nn}")
+# causal mask: output at position i unchanged by changes after i
+seq1 = torch.randint(0, Vv, (1, N)); seq2 = seq1.clone(); seq2[0, 4:] = (seq2[0, 4:] + 1) % Vv
+o1, o2 = logits_causal(seq1), logits_causal(seq2)
+check("with the causal mask, logits at positions < 4 do not depend on inputs at positions >= 4", torch.allclose(o1[:, :4], o2[:, :4], atol=1e-6))''')
+
+    c.eq(
+        "EQ-S4-005", "Sampling cost: one network evaluation per element",
+        r"\mathrm{NFE}=N;\qquad N=256\times256\times3=196{,}608\ \text{for a }256^2\text{ RGB image}",
+        plain=(
+            "Because each element is drawn from a distribution that depends on all the previous ones, generation "
+            "must proceed one element at a time, and each step costs one evaluation of the network. For a "
+            "medium-sized colour image modelled pixel by pixel that is almost two hundred thousand evaluations, "
+            "which is why image autoregression moved to short sequences of learned tokens and why the paper counts "
+            "network function evaluations (NFE) as the sampler's cost."),
+        refresher=(
+            "The count is exact for a sequential sampler without caching tricks; with a key--value cache each "
+            "evaluation is incremental (next entry) but the number of evaluations is still $N$. VQGAN-style "
+            "tokenisers shorten $N$ by two to three orders of magnitude, VAR reduces NFE to the number of scales, and "
+            "Parallel WaveNet distils the sampler into a flow with NFE 1; the comparison contract in §7 asks that NFE "
+            "be reported beside any quality number. Arithmetic check only."),
+        code='''check("256 x 256 x 3 = 196,608 network evaluations", 256 * 256 * 3 == 196_608)
+check("a 16 x 16 token grid (VQGAN at 256 px with factor 16) needs 256 evaluations: 768x fewer", 196_608 // (16 * 16) == 768)''')
+
+    c.eq(
+        "EQ-S4-006", "The key--value cache",
+        r"\text{cache size}=2\times n_{\mathrm{layer}}\times d\times N\ \text{values (keys and values, per sequence)}",
+        plain=(
+            "When a transformer generates token $N+1$ it needs the attention keys and values of all $N$ earlier "
+            "tokens at every layer. Storing them means each new token computes its keys and values once, instead of "
+            "recomputing them for the whole prefix at every step, at the cost of memory that grows with the sequence "
+            "length: two tensors (keys and values) per "
+            "layer, each of width $d$ per token. For long contexts and many concurrent users this cache, not the "
+            "weights, is what fills the GPU."),
+        refresher=(
+            "Pope et al. (2023). In bytes the cache is $2\\,n_{\\mathrm{layer}}\\,d\\,N\\,b$ with $b$ bytes per "
+            "value; multi-query and grouped-query attention (Ainslie et al., 2023) replace $d$ by the key--value "
+            "width shared across head groups, and paged attention (Kwon et al., 2023) allocates it in blocks. The "
+            "paper's reference implementation omits the cache, so the measured generation throughput in §8 is a "
+            "lower bound. The checks: incremental decoding with a cache gives exactly the outputs of a full causal "
+            "recomputation, the cache holds $2\\,n_{\\mathrm{layer}}\\,d\\,N$ values, and the arithmetic for a "
+            "GPT-2-small-sized configuration."),
+        code='''n_layer, d_model, Nctx = 3, 16, 10
+torch.manual_seed(1)
+W = [[torch.randn(d_model, d_model, dtype=torch.float64) / d_model**0.5 for _ in range(3)] for _ in range(n_layer)]
+def attend(q, K, V):
+    a = torch.softmax(q @ K.T / d_model**0.5, -1); return a @ V
+def full_pass(X):                                   # every layer recomputes keys/values for the whole prefix, causal mask
+    h = X
+    for Wq, Wk, Wv in W:
+        Q, K, V = h @ Wq, h @ Wk, h @ Wv
+        S = Q @ K.T / d_model**0.5 + torch.triu(torch.full((len(h), len(h)), float("-inf"), dtype=torch.float64), 1)
+        h = h + torch.softmax(S, -1) @ V
+    return h
+X = torch.randn(Nctx, d_model, dtype=torch.float64)
+cache = [([], []) for _ in range(n_layer)]          # per layer: lists of cached keys and values
+outs = []
+for t in range(Nctx):                               # incremental decoding: one new token per step
+    h = X[t]
+    for (Wq, Wk, Wv), (Ks, Vs) in zip(W, cache):
+        Ks.append(h @ Wk); Vs.append(h @ Wv)         # keys/values computed once and stored
+        h = h + attend(h @ Wq, torch.stack(Ks), torch.stack(Vs))
+    outs.append(h)
+check("incremental decoding with a KV cache = full causal recomputation", torch.allclose(torch.stack(outs), full_pass(X), atol=1e-12))
+n_values = sum(sum(k_.numel() for k_ in Ks) + sum(v_.numel() for v_ in Vs) for Ks, Vs in cache)
+check("cached values = 2 x n_layer x d x N", n_values == 2 * n_layer * d_model * Nctx, f"{n_values} values")
+gb = 2 * 12 * 768 * 1024 * 2 / 1e9          # GPT-2 small, 1024 tokens, bf16: 2 bytes per value
+check("GPT-2 small at 1024 tokens in bf16 holds a 37.7 MB cache per sequence", *close(gb * 1e3, 37.7, 0.1, "MB: "))''')
+
+    c.eq(
+        "EQ-S4-007", "Speculative decoding leaves the output distribution unchanged",
+        r"\text{accept }\tilde x\sim q\text{ with probability }\min\!\big(1,p(\tilde x)/q(\tilde x)\big),\ "
+        r"\text{else resample from }\frac{(p-q)_+}{\sum(p-q)_+}\quad\Rightarrow\quad x\sim p",
+        plain=(
+            "A small, fast 'draft' model guesses the next few tokens; the large model checks them all in one "
+            "parallel pass. Each guess is kept with a probability that compares the big model's opinion $p$ with the "
+            "draft's $q$: always kept if the big model likes it at least as much, otherwise kept with probability "
+            "$p/q$. When a guess is rejected, the replacement is drawn from the part of $p$ that $q$ under-served. "
+            "The remarkable property, checked below exactly, is that the token you end up with has distribution "
+            "$p$: the big model's distribution, untouched. Speculative decoding changes only the speed."),
+        refresher=(
+            "Leviathan et al. (2023); Chen et al. (2023). The proof is one line: "
+            "$P(x)=q(x)\\min(1,p(x)/q(x))+\\big(1-\\sum_y q(y)\\min(1,p(y)/q(y))\\big)\\frac{(p(x)-q(x))_+}{\\sum_y(p(y)-q(y))_+}$, "
+            "and both terms simplify because $\\min(q,p)+(p-q)_+=p$ and $1-\\sum\\min(q,p)=\\sum(p-q)_+$. The expected "
+            "number of accepted tokens per pass grows with the overlap $\\sum\\min(p,q)$, which is why a well-aligned "
+            "draft model matters. The check computes the output distribution of the scheme exactly on a five-token "
+            "vocabulary (no sampling) and compares it with $p$, and confirms the acceptance rate equals "
+            "$\\sum_y\\min(p(y),q(y))=1-\\mathrm{TV}(p,q)$."),
+        code='''p_big, q_draft = rng.dirichlet(np.ones(5)), rng.dirichlet(np.ones(5))
+accept = np.minimum(1.0, p_big / q_draft)                     # acceptance probability of each drafted token
+p_acc = q_draft * accept                                      # probability of (draft x and accept)
+resid = np.maximum(p_big - q_draft, 0); resid /= resid.sum()  # resampling distribution on rejection
+out = p_acc + (1 - p_acc.sum()) * resid                       # exact output distribution of the scheme
+check("output distribution of speculative decoding = p (the large model), exactly", *close(out, p_big, 1e-14))
+check("acceptance rate = sum min(p, q) = 1 - TV(p, q)", *close(p_acc.sum(), 1 - 0.5 * np.abs(p_big - q_draft).sum(), 1e-14))''')
+
+    c.section("Reporting the likelihood of a sequence model", (
+        "Because the likelihood is exact, autoregressive models report it directly. The paper insists on the units: "
+        "perplexity depends on the tokeniser, bits per byte does not."))
+
+    c.eq(
+        ["EQ-M-046", "EQ-S1-059", "EQ-S5-005", "EQ-S5-016", "EQ-S10-018"], "Perplexity, bits per token and bits per byte",
+        r"\mathrm{PPL}=\exp\Big(-\frac1L\sum_{i=1}^{L}\log p_\theta(x_i\mid\mathbf x_{<i})\Big)=2^{\,\text{bits/token}};\qquad "
+        r"\text{bits/byte}=\frac{\#\text{tokens}}{\#\text{bytes}}\times\text{bits/token}",
+        plain=(
+            "Perplexity is the exponential of the average per-token negative log-likelihood: if a model has "
+            "perplexity 20, it is on average as uncertain about the next token as if it were choosing uniformly among "
+            "20 options. It reports the pretraining objective exactly (as the exponential of minus its per-token average), which is why it is the standard report. But a "
+            "'token' is whatever the tokeniser decided, so two models with different tokenisers have perplexities "
+            "that cannot be compared; converting to bits per byte of the original text removes the tokeniser from "
+            "the comparison. Supplement S10 adds a caveat for aligned models: after post-training, perplexity no "
+            "longer ranks models by the quality users care about (E7b in §8.7 measures one such reversal)."),
+        refresher=(
+            "Perplexity is $2^{H}$ with $H$ the per-token cross-entropy in bits; it is comparable only under one "
+            "tokeniser, corpus and context protocol (context length and stride change it). Bits per byte "
+            "(Radford et al., 2019) multiplies bits per token by tokens per byte of the raw UTF-8 text. S5's table "
+            "entry 'Measures: per-token cross-entropy' (EQ-S5-016) is this identity. The check (ported from "
+            "`bits_per_dim_dequantisation_and_unit_conversions`) verifies the two unit conversions and the "
+            "'uniform over PPL options' reading; the repository's `common.metrics.perplexity` is checked against "
+            "the same identity in `verify_equations.py`."),
+        code='''nll = rng.random(50) * 4                                    # per-token NLL in nats for 50 tokens
+ppl = math.exp(nll.mean())
+check("exp(mean nats/token) = 2^(bits/token)", *close(ppl, 2 ** (nll.mean() / math.log(2)), 1e-9))
+n_tok, n_byte = 50, 212
+bpb = nll.sum() / math.log(2) / n_byte
+check("bits/byte = (tokens/bytes) x log2 PPL", *close(bpb, (n_tok / n_byte) * math.log2(ppl), 1e-12))
+uniform_nll = np.full(50, math.log(20.0))
+check("a uniform choice among 20 tokens has perplexity exactly 20", *close(math.exp(uniform_nll.mean()), 20.0, 1e-12))
+# the same text under a coarser tokeniser: fewer tokens, higher per-token loss, identical bits per byte
+nll_coarse = nll.reshape(25, 2).sum(1)                       # merge token pairs: 25 tokens with the summed NLL
+check("re-tokenising changes perplexity but not bits per byte",
+      abs(math.exp(nll_coarse.mean()) - ppl) > 1 and abs(nll_coarse.sum() / math.log(2) / n_byte - bpb) < 1e-12,
+      f"PPL {ppl:.2f} -> {math.exp(nll_coarse.mean()):.2f}; bits/byte {bpb:.4f} both")''')
+
+    return c.build()
+
+
+if __name__ == "__main__":
+    print(build().path)

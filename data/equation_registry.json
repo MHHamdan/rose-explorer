@@ -1,0 +1,1761 @@
+[
+ {
+  "id": "EQ-M-001",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:15",
+  "label": "(inline) intractable marginal / EBM normaliser",
+  "latex": "\\int p_\\theta(x\\mid z)p(z)\\,dz;\\ \\exp(-E_\\theta(x))/Z_\\theta",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-002",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:31-32",
+  "label": "(inline) KL definition",
+  "latex": "\\KL{p}{q}=\\E_p[\\log(p/q)]\\ge0,\\ \\text{finite only when }p\\ll q",
+  "verified": "YES",
+  "check_in_verify_equations": "kl_gaussian_closed_form_vs_mc"
+ },
+ {
+  "id": "EQ-M-003",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:34-38",
+  "label": "eq:mle_kl",
+  "latex": "\\hat\\theta_{ML}=\\argmax_\\theta\\frac1N\\sum_n\\log p_\\theta(x^{(n)})\\xrightarrow[N\\to\\infty]{}\\argmin_\\theta\\KL{p_{data}}{p_\\theta}",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "mle_equals_forward_kl_minimiser"
+ },
+ {
+  "id": "EQ-M-004",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:38-46",
+  "label": "(inline) forward vs reverse KL; mode covering/seeking",
+  "latex": "\\KL{p_{data}}{p_\\theta}=\\infty\\text{ if }p_\\theta=0\\text{ where }p_{data}>0;\\ \\KL{p_\\theta}{p_{data}}\\text{ tolerates missing modes}",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "kl_forward_mode_covering_vs_reverse_mode_seeking"
+ },
+ {
+  "id": "EQ-M-005",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:46-50",
+  "label": "(inline) Jensen-Shannon divergence",
+  "latex": "\\JS{p}{q}=\\tfrac12\\KL{p}{m}+\\tfrac12\\KL{q}{m},\\ m=\\tfrac12(p+q);\\ =\\log2\\text{ for disjoint supports}",
+  "verified": "YES",
+  "check_in_verify_equations": "js_bounds_and_disjoint_supports"
+ },
+ {
+  "id": "EQ-M-006",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:50-53",
+  "label": "(inline) W1 Kantorovich-Rubinstein dual",
+  "latex": "W_1(p,q)=\\sup_{\\norm{f}_L\\le1}(\\E_p[f]-\\E_q[f])",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "w1_kantorovich_rubinstein_dual_and_continuity"
+ },
+ {
+  "id": "EQ-M-007",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:60-68",
+  "label": "eq:elbo",
+  "latex": "\\log p_\\theta(x)\\ge\\E_q[\\log p_\\theta(x|z)]-\\KL{q_\\phi(z|x)}{p(z)}=:\\mathcal L;\\ \\log p_\\theta(x)-\\mathcal L=\\KL{q_\\phi(z|x)}{p_\\theta(z|x)}\\ge0",
+  "verified": "YES",
+  "check_in_verify_equations": "elbo_plus_posterior_kl_equals_log_evidence"
+ },
+ {
+  "id": "EQ-M-008",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:71-72",
+  "label": "(inline) reparameterisation",
+  "latex": "z=\\mu_\\phi(x)+\\sigma_\\phi(x)\\odot\\epsilon,\\ \\epsilon\\sim\\N(0,I)",
+  "verified": "YES",
+  "check_in_verify_equations": "reparameterisation_gradient_unbiased"
+ },
+ {
+  "id": "EQ-M-009",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:72-75",
+  "label": "(inline) IWAE monotone family",
+  "latex": "\\mathcal L_1\\le\\mathcal L_K\\le\\log p_\\theta(x)\\ \\text{converging to the log-likelihood}",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "iwae_monotone_in_K_and_converges"
+ },
+ {
+  "id": "EQ-M-010",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:75-78",
+  "label": "(inline) posterior collapse / beta-weighted rate",
+  "latex": "q_\\phi=p\\ \\Rightarrow\\ \\text{rate}=0;\\ \\beta\\cdot\\text{rate}",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-011",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:82-86",
+  "label": "eq:chain_rule",
+  "latex": "\\log p_\\theta(x)=\\sum_{i=1}^D\\log p_\\theta(x_i\\mid x_{<i})",
+  "verified": "YES",
+  "check_in_verify_equations": "chain_rule_factorisation"
+ },
+ {
+  "id": "EQ-M-012",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:87-95",
+  "label": "eq:cov",
+  "latex": "\\log p_\\theta(x)=\\log p_Z(f_\\theta(x))+\\sum_{k=1}^K\\log|\\det J_{f_k}(h_{k-1})|,\\ h_0=x,\\ h_K=z",
+  "verified": "YES",
+  "check_in_verify_equations": "change_of_variables_sign_and_composition; repo_realnvp_logprob_vs_autograd_jacobian"
+ },
+ {
+  "id": "EQ-M-013",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:94-98",
+  "label": "(inline) triangular / 1x1-conv Jacobians",
+  "latex": "\\text{triangular }J:\\ O(D);\\ 1{\\times}1\\text{ conv: block-diagonal}",
+  "verified": "YES",
+  "check_in_verify_equations": "glow_1x1_conv_logdet"
+ },
+ {
+  "id": "EQ-M-014",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:105-108",
+  "label": "eq:gan",
+  "latex": "\\min_\\theta\\max_\\psi\\E_{p_{data}}[\\log D_\\psi(x)]+\\E_{p(z)}[\\log(1-D_\\psi(G_\\theta(z)))]",
+  "verified": "YES",
+  "check_in_verify_equations": "gan_optimal_discriminator_value_minus_log4_plus_2js"
+ },
+ {
+  "id": "EQ-M-015",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:109-113",
+  "label": "(inline) optimal discriminator and value",
+  "latex": "D^*=p_{data}/(p_{data}+p_g),\\ V(D^*,G)=2\\JS{p_{data}}{p_g}-\\log4",
+  "verified": "YES",
+  "check_in_verify_equations": "gan_optimal_discriminator_value_minus_log4_plus_2js"
+ },
+ {
+  "id": "EQ-M-016",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:113-115",
+  "label": "(inline) non-saturating loss",
+  "latex": "-\\E_z[\\log D(G(z))]",
+  "verified": "YES",
+  "check_in_verify_equations": "gan_nonsaturating_gradient_identity"
+ },
+ {
+  "id": "EQ-M-017",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:115-118",
+  "label": "(inline) WGAN / WGAN-GP / spectral norm",
+  "latex": "\\max_{\\norm{f}_L\\le1}\\E_{p_{data}}f-\\E_{p_g}f;\\ \\text{GP on interpolates}",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "wgan_critic_and_gradient_penalty"
+ },
+ {
+  "id": "EQ-M-018",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:124-126",
+  "label": "(inline) EBM density",
+  "latex": "p_\\theta(x)=\\exp(-E_\\theta(x))/Z_\\theta,\\ Z_\\theta=\\int\\exp(-E_\\theta)\\,dx",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-019",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:128-132",
+  "label": "eq:ebm_grad",
+  "latex": "\\nabla_\\theta\\E_{p_{data}}\\log p_\\theta=-\\E_{p_{data}}\\nabla_\\theta E_\\theta+\\E_{p_\\theta}\\nabla_\\theta E_\\theta",
+  "verified": "YES",
+  "check_in_verify_equations": "ebm_loglik_gradient_positive_negative_phase"
+ },
+ {
+  "id": "EQ-M-020",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:136-138",
+  "label": "(inline) score of an EBM",
+  "latex": "s_\\theta(x)=\\nabla_x\\log p_\\theta(x)=-\\nabla_xE_\\theta(x)",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-021",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:138-141",
+  "label": "(inline) Hyvarinen score matching",
+  "latex": "\\E_{p_{data}}[\\Tr\\nabla_xs_\\theta(x)+\\tfrac12\\norm{s_\\theta(x)}^2]",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "hyvarinen_score_matching_equals_fisher_up_to_constant"
+ },
+ {
+  "id": "EQ-M-022",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:141-147",
+  "label": "eq:dsm",
+  "latex": "\\mathcal L_{DSM}=\\E_{x,\\epsilon}\\norm{s_\\theta(x+\\sigma\\epsilon)+\\epsilon/\\sigma}^2",
+  "verified": "YES",
+  "check_in_verify_equations": "dsm_equals_esm_on_smoothed_density_up_to_constant"
+ },
+ {
+  "id": "EQ-M-023",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:155-158",
+  "label": "(inline) forward SDE and VP choice",
+  "latex": "dx=f(x,t)dt+g(t)dw;\\ f=-\\tfrac12\\beta(t)x,\\ g=\\sqrt{\\beta(t)}",
+  "verified": "YES",
+  "check_in_verify_equations": "vp_sde_fokker_planck_and_reverse_sde_and_pf_ode"
+ },
+ {
+  "id": "EQ-M-024",
+  "document": "main",
+  "location": "removed from the main paper in the October 2026 revision; the equation is in Supplement S1 (EQ-S1-038)",
+  "label": "eq:sde_rev",
+  "latex": "dx=[f(x,t)-g(t)^2\\nabla_x\\log p_t(x)]dt+g(t)d\\bar w",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "vp_sde_fokker_planck_and_reverse_sde_and_pf_ode"
+ },
+ {
+  "id": "EQ-M-025",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:164-167",
+  "label": "(inline) probability-flow ODE",
+  "latex": "dx/dt=f-\\tfrac12g^2\\nabla_x\\log p_t",
+  "verified": "YES",
+  "check_in_verify_equations": "vp_sde_fokker_planck_and_reverse_sde_and_pf_ode"
+ },
+ {
+  "id": "EQ-M-026",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:171-172",
+  "label": "(inline) likelihood weighting bound",
+  "latex": "\\lambda(t)=g(t)^2\\Rightarrow\\text{training loss}\\ge-\\log p^{SDE}_\\theta",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "vp_sde_fokker_planck_and_reverse_sde_and_pf_ode"
+ },
+ {
+  "id": "EQ-M-027",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:175-177",
+  "label": "(inline) DDPM forward kernel",
+  "latex": "q(x_t|x_{t-1})=\\N(\\sqrt{1-\\beta_t}x_{t-1},\\beta_tI),\\ \\bar\\alpha_t=\\prod_{s\\le t}(1-\\beta_s)",
+  "verified": "YES",
+  "check_in_verify_equations": "ddpm_forward_marginal_by_composing_kernels"
+ },
+ {
+  "id": "EQ-M-028",
+  "document": "main",
+  "location": "removed from the main paper in the October 2026 revision; the equation is in Supplement S1 (EQ-S1-043)",
+  "label": "eq:ddpm_fwd",
+  "latex": "x_t=\\sqrt{\\bar\\alpha_t}x_0+\\sqrt{1-\\bar\\alpha_t}\\epsilon;\\ q(x_{t-1}|x_t,x_0)=\\N(\\tilde\\mu_t,\\tilde\\beta_tI)",
+  "verified": "YES",
+  "check_in_verify_equations": "ddpm_forward_marginal_by_composing_kernels; ddpm_posterior_mean_variance_bayes"
+ },
+ {
+  "id": "EQ-M-029",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:183-186",
+  "label": "(inline) diffusion variational bound decomposition",
+  "latex": "-\\log p_\\theta(x_0)\\le L_T+\\sum_{t\\ge2}L_{t-1}+L_0",
+  "verified": "YES",
+  "check_in_verify_equations": "ddpm_eps_parameterisation_and_vlb_weight; repo_vlb_bpd_assembly_oracle_delta_data"
+ },
+ {
+  "id": "EQ-M-030",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:189-197",
+  "label": "eq:ddpm_simple",
+  "latex": "\\mathcal L_{simple}=\\E\\norm{\\epsilon-\\epsilon_\\theta(\\sqrt{\\bar\\alpha_t}x_0+\\sqrt{1-\\bar\\alpha_t}\\epsilon,t)}^2;\\ s_\\theta=-\\epsilon_\\theta/\\sqrt{1-\\bar\\alpha_t}",
+  "verified": "YES",
+  "check_in_verify_equations": "ddpm_eps_parameterisation_and_vlb_weight"
+ },
+ {
+  "id": "EQ-M-031",
+  "document": "main",
+  "location": "removed from the main paper in the October 2026 revision; the equation is in Supplement S1 (EQ-S1-051)",
+  "label": "eq:ddim",
+  "latex": "x_{\\tau_{i-1}}=\\sqrt{\\bar\\alpha_{\\tau_{i-1}}}\\hat x_0+\\sqrt{1-\\bar\\alpha_{\\tau_{i-1}}-\\sigma_{\\tau_i}^2}\\epsilon_\\theta+\\sigma_{\\tau_i}\\epsilon,\\ \\sigma^2_{\\tau_i}=\\eta^2\\frac{1-\\bar\\alpha_{\\tau_{i-1}}}{1-\\bar\\alpha_{\\tau_i}}(1-\\frac{\\bar\\alpha_{\\tau_i}}{\\bar\\alpha_{\\tau_{i-1}}})",
+  "verified": "YES",
+  "check_in_verify_equations": "ddim_eta_family_sigma_and_marginals; repo_samplers_with_bayes_optimal_eps_on_gaussian_data"
+ },
+ {
+  "id": "EQ-M-032",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:208-211",
+  "label": "(inline) eta=1 ancestral; eta=0 PF-ODE discretisation",
+  "latex": "\\eta=1:\\ \\sigma^2=\\tilde\\beta\\text{ on the sub-sequence};\\ \\eta=0:\\ \\text{Euler in }x/\\sqrt{\\bar\\alpha},\\ \\sqrt{(1-\\bar\\alpha)/\\bar\\alpha}",
+  "verified": "YES",
+  "check_in_verify_equations": "ddim_eta_family_sigma_and_marginals"
+ },
+ {
+  "id": "EQ-M-033",
+  "document": "main",
+  "location": "paper/main/03_foundations.tex:218-223",
+  "label": "(inline) flow matching straight path",
+  "latex": "x_t=(1-t)x_0+t\\epsilon",
+  "verified": "YES",
+  "check_in_verify_equations": "flow_matching_linear_path_marginal_velocity"
+ },
+ {
+  "id": "EQ-M-034",
+  "document": "main",
+  "location": "paper/main/06_families.tex:16-17",
+  "label": "(prose) AR = forward KL",
+  "latex": "\\text{MLE}\\Rightarrow\\argmin\\KL{p_{data}}{p_\\theta}",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-035",
+  "document": "main",
+  "location": "paper/main/06_families.tex:46-47",
+  "label": "(inline) beta-VAE bound direction",
+  "latex": "\\beta>1:\\ \\text{looser lower bound};\\ \\beta<1:\\ \\text{not a bound}",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "beta_vae_bound_direction"
+ },
+ {
+  "id": "EQ-M-036",
+  "document": "main",
+  "location": "paper/main/06_families.tex:70-72",
+  "label": "(inline) NS gradient at optimal D",
+  "latex": "\\nabla[\\KL{p_g}{p_{data}}-2\\JS{p_{data}}{p_g}]",
+  "verified": "YES",
+  "check_in_verify_equations": "gan_nonsaturating_gradient_identity"
+ },
+ {
+  "id": "EQ-M-037",
+  "document": "main",
+  "location": "paper/main/06_families.tex:88-91",
+  "label": "(prose) MAF density-parallel / IAF sampling-parallel; flow posterior reverse KL",
+  "latex": "\\text{ELBO with flow }q:\\ \\KL{q}{p(z|x)}",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-038",
+  "document": "main",
+  "location": "paper/main/06_families.tex:91-93",
+  "label": "(arithmetic) Flow++ ablation share",
+  "latex": "0.13/(3.49-3.08)\\approx0.32",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-039",
+  "document": "main",
+  "location": "paper/main/06_families.tex:98-100",
+  "label": "(prose) flows on manifolds need log-det -> -inf",
+  "latex": "\\log|\\det J_{f^{-1}}|\\to-\\infty",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-040",
+  "document": "main",
+  "location": "paper/main/06_families.tex:108-112",
+  "label": "(prose) flow matching gives a CNF likelihood",
+  "latex": "\\text{CNF in the sense of eq:cov}",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-041",
+  "document": "main",
+  "location": "paper/main/06_families.tex:129-134",
+  "label": "(prose) DSM at many noise levels = DDPM loss up to weighting; NCSN/DDPM = VE/VP",
+  "latex": "\\mathcal L_{DSM}\\ \\text{vs}\\ \\mathcal L_{simple}",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "ddpm_eps_parameterisation_and_vlb_weight"
+ },
+ {
+  "id": "EQ-M-042",
+  "document": "main",
+  "location": "paper/main/06_families.tex:134-136",
+  "label": "(prose) posterior score",
+  "latex": "\\nabla_x\\log p(x|y)=\\nabla_x\\log p(x)+\\nabla_x\\log p(y|x)",
+  "verified": "YES",
+  "check_in_verify_equations": "cfg_convention_and_tilt"
+ },
+ {
+  "id": "EQ-M-043",
+  "document": "main",
+  "location": "paper/main/06_families.tex:146-151",
+  "label": "(prose) L_simple down-weights small t; DDPM numbers",
+  "latex": "w_t=\\frac{\\beta_t^2}{2\\sigma_t^2\\alpha_t(1-\\bar\\alpha_t)}\\ \\text{largest at small }t\\text{ (not monotone on the linear schedule; notebooks ch09)}",
+  "verified": "YES",
+  "check_in_verify_equations": "ddpm_eps_parameterisation_and_vlb_weight"
+ },
+ {
+  "id": "EQ-M-044",
+  "document": "main",
+  "location": "paper/main/07_evaluation.tex:39-46",
+  "label": "eq:bpd",
+  "latex": "\\mathrm{bits/dim}=\\frac{-\\E_u[\\log p_\\theta(y)]+D\\log256}{D\\log2},\\ y=(x+u)/256",
+  "verified": "YES",
+  "check_in_verify_equations": "bits_per_dim_dequantisation_and_unit_conversions"
+ },
+ {
+  "id": "EQ-M-045",
+  "document": "main",
+  "location": "paper/main/07_evaluation.tex:47-51",
+  "label": "(prose) all reported values bound the same code length",
+  "latex": "\\text{bpd}_{model}\\ge-\\log_2P_{model}(x)/D",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "bits_per_dim_dequantisation_and_unit_conversions"
+ },
+ {
+  "id": "EQ-M-046",
+  "document": "main",
+  "location": "paper/main/07_evaluation.tex:51-54",
+  "label": "(inline) perplexity; bits per byte",
+  "latex": "\\mathrm{PPL}=\\exp(-\\frac1L\\sum_i\\log p_\\theta(x_i|x_{<i}))",
+  "verified": "YES",
+  "check_in_verify_equations": "bits_per_dim_dequantisation_and_unit_conversions"
+ },
+ {
+  "id": "EQ-M-047",
+  "document": "main",
+  "location": "paper/main/07_evaluation.tex:57-62",
+  "label": "(prose) FID and its 1/N bias",
+  "latex": "\\mathrm{FID}=\\norm{\\mu_r-\\mu_g}^2+\\Tr(\\Sigma_r+\\Sigma_g-2(\\Sigma_r\\Sigma_g)^{1/2});\\ \\text{bias}\\sim1/N",
+  "verified": "YES",
+  "check_in_verify_equations": "fid_formula_and_sample_size_bias"
+ },
+ {
+  "id": "EQ-M-048",
+  "document": "main",
+  "location": "paper/main/07_evaluation.tex:64-65",
+  "label": "(prose) KID avoids the Gaussian assumption with an unbiased estimator",
+  "latex": "\\mathrm{KID}=\\widehat{\\mathrm{MMD}}^2_u\\ (k(x,y)=(x^\\top y/d+1)^3)",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-049",
+  "document": "main",
+  "location": "paper/main/07_evaluation.tex:78-80",
+  "label": "(prose) CLIPScore scaling",
+  "latex": "\\mathrm{CLIP\\text{-}S}=\\kappa\\max(\\cos(E_I,E_C),0),\\ \\kappa\\in\\{2.5,100\\}",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-050",
+  "document": "main",
+  "location": "paper/main/08_benchmark.tex:31-32",
+  "label": "(inline) CFG convention",
+  "latex": "\\epsilon_\\varnothing+w(\\epsilon_c-\\epsilon_\\varnothing),\\ w=1\\ \\text{unguided}",
+  "verified": "YES",
+  "check_in_verify_equations": "cfg_convention_and_tilt"
+ },
+ {
+  "id": "EQ-M-051",
+  "document": "main",
+  "location": "paper/main/09_systems.tex:22-24",
+  "label": "(inline) SFT conditional likelihood",
+  "latex": "\\mathcal L_{SFT}=\\E_{(c,y)}[\\sum_i\\log p_\\theta(y_i|y_{<i},c)]",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-052",
+  "document": "main",
+  "location": "paper/main/09_systems.tex:31-34",
+  "label": "(inline) Bradley-Terry",
+  "latex": "p(y_w\\succ y_l|c)=\\sigma(r(c,y_w)-r(c,y_l)),\\ \\sigma(u)=1/(1+e^{-u})",
+  "verified": "YES",
+  "check_in_verify_equations": "dpo_implicit_reward_identity_and_loss"
+ },
+ {
+  "id": "EQ-M-053",
+  "document": "main",
+  "location": "paper/main/09_systems.tex:36-43",
+  "label": "eq:rlhf",
+  "latex": "\\max_\\theta\\E[r]-\\beta\\E_c\\KL{\\pi_\\theta}{\\pi_{ref}};\\ \\pi^*=\\pi_{ref}\\exp(r/\\beta)/Z(c)",
+  "verified": "YES",
+  "check_in_verify_equations": "rlhf_kl_regularised_optimum_is_exponential_tilt"
+ },
+ {
+  "id": "EQ-M-054",
+  "document": "main",
+  "location": "paper/main/09_systems.tex:46-50",
+  "label": "(prose) tilt keeps support, concentrates as beta decreases",
+  "latex": "\\mathrm{supp}\\,\\pi^*=\\mathrm{supp}\\,\\pi_{ref}",
+  "verified": "YES",
+  "check_in_verify_equations": "rlhf_kl_regularised_optimum_is_exponential_tilt"
+ },
+ {
+  "id": "EQ-M-055",
+  "document": "main",
+  "location": "paper/main/09_systems.tex:50-57",
+  "label": "eq:dpo",
+  "latex": "\\mathcal L_{DPO}=-\\E\\log\\sigma(\\beta\\log\\frac{\\pi_\\theta(y_w|c)}{\\pi_{ref}(y_w|c)}-\\beta\\log\\frac{\\pi_\\theta(y_l|c)}{\\pi_{ref}(y_l|c)})",
+  "verified": "YES",
+  "check_in_verify_equations": "dpo_implicit_reward_identity_and_loss"
+ },
+ {
+  "id": "EQ-M-056",
+  "document": "main",
+  "location": "paper/main/09_systems.tex:67-69",
+  "label": "(prose) beta->0 concentrates on reward-model errors",
+  "latex": "\\beta\\to0:\\ \\pi^*\\to\\pi_{ref}|_{\\argmax r}",
+  "verified": "YES",
+  "check_in_verify_equations": "rlhf_kl_regularised_optimum_is_exponential_tilt"
+ },
+ {
+  "id": "EQ-M-057",
+  "document": "main",
+  "location": "paper/main/09_systems.tex:73-81",
+  "label": "eq:rag",
+  "latex": "p_\\theta(y|c)\\approx\\sum_{z\\in\\text{top-}k(c)}\\tilde p_\\xi(z|c)p_\\theta(y|c,z)",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "rag_sequence_vs_token_marginals"
+ },
+ {
+  "id": "EQ-M-058",
+  "document": "main",
+  "location": "paper/main/09_systems.tex:95-99",
+  "label": "(prose) agent trajectory = chain rule with external factor",
+  "latex": "p(\\tau)=\\prod_t\\pi_\\theta(a_t|c,h_t)\\mathcal T(o_t|h_t,a_t)",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-M-059",
+  "document": "main",
+  "location": "paper/main/09_systems.tex:127-130",
+  "label": "(prose) pass@k crossover as predicted by eq:rlhf",
+  "latex": "\\text{pass@}k(\\pi^*)\\ \\text{vs}\\ \\text{pass@}k(\\pi_{ref})",
+  "verified": "NO",
+  "check_in_verify_equations": "rlhf_tilt_with_binary_verifier_cannot_lower_pass_at_k"
+ },
+ {
+  "id": "EQ-S1-001",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:32-33",
+  "label": "(inline) parameter counts",
+  "latex": "2^{784}-1;\\ O(D^2)",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-002",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:62-66",
+  "label": "fig:likelihood_axes nodes",
+  "latex": "\\prod_ip(x_i|x_{<i});\\ p_Z(f(x))|\\det\\partial f/\\partial x|;\\ \\log p\\ge\\mathcal L_{ELBO}",
+  "verified": "YES",
+  "check_in_verify_equations": "change_of_variables_sign_and_composition"
+ },
+ {
+  "id": "EQ-S1-003",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:91-96",
+  "label": "eq:entropy",
+  "latex": "H(p)=-\\E_p\\log p,\\ H(p,q)=-\\E_p\\log q",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-004",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:97-102",
+  "label": "eq:kl",
+  "latex": "\\KL{p}{q}=\\E_p\\log\\frac pq=H(p,q)-H(p)\\ge0",
+  "verified": "YES",
+  "check_in_verify_equations": "kl_gaussian_closed_form_vs_mc"
+ },
+ {
+  "id": "EQ-S1-005",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:103-105",
+  "label": "(inline) f-divergence; KL generator",
+  "latex": "D_f(p\\|q)=\\E_q[f(p/q)],\\ f(u)=u\\log u",
+  "verified": "YES",
+  "check_in_verify_equations": "js_bounds_and_disjoint_supports"
+ },
+ {
+  "id": "EQ-S1-006",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:106-112",
+  "label": "eq:jsd",
+  "latex": "\\JS{p}{q}=\\tfrac12\\KL{p}{m}+\\tfrac12\\KL{q}{m}\\le\\log2",
+  "verified": "YES",
+  "check_in_verify_equations": "js_bounds_and_disjoint_supports"
+ },
+ {
+  "id": "EQ-S1-007",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:113-120",
+  "label": "eq:w1",
+  "latex": "W_1=\\inf_{\\gamma\\in\\Pi}\\E\\norm{x-y}=\\sup_{\\norm{f}_L\\le1}\\E_pf-\\E_qf",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "w1_kantorovich_rubinstein_dual_and_continuity"
+ },
+ {
+  "id": "EQ-S1-008",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:126-130",
+  "label": "eq:mle",
+  "latex": "\\argmax\\frac1N\\sum\\log p_\\theta\\to\\argmax\\E_{p_{data}}\\log p_\\theta",
+  "verified": "YES",
+  "check_in_verify_equations": "mle_equals_forward_kl_minimiser"
+ },
+ {
+  "id": "EQ-S1-009",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:131-136",
+  "label": "eq:mle_kl",
+  "latex": "\\argmax\\E\\log p_\\theta=\\argmin\\KL{p_{data}}{p_\\theta}",
+  "verified": "YES",
+  "check_in_verify_equations": "mle_equals_forward_kl_minimiser"
+ },
+ {
+  "id": "EQ-S1-010",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:136-146",
+  "label": "(prose) consistency; mode covering/seeking",
+  "latex": "\\KL{p_{data}}{p_\\theta}=\\infty\\text{ where }p_{data}>0,p_\\theta=0",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": "kl_forward_mode_covering_vs_reverse_mode_seeking"
+ },
+ {
+  "id": "EQ-S1-011",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:152-158",
+  "label": "eq:marginal",
+  "latex": "p_\\theta(x)=\\int p_\\theta(x|z)p(z)dz;\\ p_\\theta(z|x)=p_\\theta(x|z)p(z)/p_\\theta(x)",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-012",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:159-161",
+  "label": "eq:bayes",
+  "latex": "\\log p(z|x)=\\log p(x|z)+\\log p(z)-\\log p(x)",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-013",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:164-167",
+  "label": "(prose) EM monotonicity",
+  "latex": "\\sum_n\\log p_{\\theta^{(k+1)}}(x^{(n)})\\ge\\sum_n\\log p_{\\theta^{(k)}}(x^{(n)})",
+  "verified": "YES",
+  "check_in_verify_equations": "em_monotone_gmm"
+ },
+ {
+  "id": "EQ-S1-014",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:176-186",
+  "label": "eq:elbo",
+  "latex": "\\log p\\ge\\E_q\\log\\frac{p(x,z)}{q}=\\E_q\\log p(x|z)-\\KL{q}{p(z)}",
+  "verified": "YES",
+  "check_in_verify_equations": "elbo_plus_posterior_kl_equals_log_evidence"
+ },
+ {
+  "id": "EQ-S1-015",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:187-190",
+  "label": "eq:elbo_gap",
+  "latex": "\\log p-\\mathcal L=\\KL{q_\\phi(z|x)}{p_\\theta(z|x)}",
+  "verified": "YES",
+  "check_in_verify_equations": "elbo_plus_posterior_kl_equals_log_evidence"
+ },
+ {
+  "id": "EQ-S1-016",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:197-201",
+  "label": "eq:reparam",
+  "latex": "z=\\mu+\\sigma\\odot\\epsilon;\\ \\nabla_\\phi\\E_q g=\\E_\\epsilon\\nabla_\\phi g(z(\\epsilon,\\phi))",
+  "verified": "YES",
+  "check_in_verify_equations": "reparameterisation_gradient_unbiased"
+ },
+ {
+  "id": "EQ-S1-017",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:203-205",
+  "label": "(inline) Gaussian rate",
+  "latex": "\\KL{\\N(\\mu,\\mathrm{diag}\\sigma^2)}{\\N(0,I)}=\\tfrac12\\sum_j(\\mu_j^2+\\sigma_j^2-1-\\log\\sigma_j^2)",
+  "verified": "YES",
+  "check_in_verify_equations": "kl_gaussian_closed_form_vs_mc"
+ },
+ {
+  "id": "EQ-S1-018",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:206-214",
+  "label": "eq:iwae",
+  "latex": "\\mathcal L_K=\\E\\log\\frac1K\\sum_k\\frac{p(x,z_k)}{q(z_k|x)};\\ \\mathcal L_1\\le\\mathcal L_K\\le\\mathcal L_{K+1}\\le\\log p",
+  "verified": "YES",
+  "check_in_verify_equations": "iwae_monotone_in_K_and_converges"
+ },
+ {
+  "id": "EQ-S1-019",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:214-219",
+  "label": "(prose) posterior collapse",
+  "latex": "q_\\phi(z|x)=p(z)",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-020",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:227-238",
+  "label": "eq:chain_rule",
+  "latex": "p_\\theta(x)=\\prod_ip_\\theta(x_i|x_{<i})",
+  "verified": "YES",
+  "check_in_verify_equations": "chain_rule_factorisation"
+ },
+ {
+  "id": "EQ-S1-021",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:240-250",
+  "label": "eq:cov",
+  "latex": "p_\\theta(x)=p_Z(f_\\theta(x))|\\det\\partial f_\\theta/\\partial x|;\\ \\log\\text{-sum over layers}",
+  "verified": "YES",
+  "check_in_verify_equations": "change_of_variables_sign_and_composition; repo_realnvp_logprob_vs_autograd_jacobian"
+ },
+ {
+  "id": "EQ-S1-022",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:251-257",
+  "label": "(inline) triangular and 1x1-conv log-det costs",
+  "latex": "\\log|\\det J|=hw\\log|\\det W|;\\ O(c^3)\\to O(c)\\text{ with LU}",
+  "verified": "YES",
+  "check_in_verify_equations": "glow_1x1_conv_logdet"
+ },
+ {
+  "id": "EQ-S1-023",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:263-270",
+  "label": "eq:gan",
+  "latex": "V(D,G)=\\E\\log D(x)+\\E\\log(1-D(G(z)))",
+  "verified": "YES",
+  "check_in_verify_equations": "gan_optimal_discriminator_value_minus_log4_plus_2js"
+ },
+ {
+  "id": "EQ-S1-024",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:271-279",
+  "label": "eq:gan_opt",
+  "latex": "D^*=\\frac{p_{data}}{p_{data}+p_g},\\ V(D^*,G)=2\\JS{p_{data}}{p_g}-\\log4",
+  "verified": "YES",
+  "check_in_verify_equations": "gan_optimal_discriminator_value_minus_log4_plus_2js"
+ },
+ {
+  "id": "EQ-S1-025",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:280-283",
+  "label": "(inline) non-saturating loss",
+  "latex": "-\\E_z\\log D(G(z))",
+  "verified": "YES",
+  "check_in_verify_equations": "gan_nonsaturating_gradient_identity"
+ },
+ {
+  "id": "EQ-S1-026",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:283-286",
+  "label": "(prose) disjoint supports: perfect D, constant JS",
+  "latex": "\\JS=\\log2",
+  "verified": "YES",
+  "check_in_verify_equations": "js_bounds_and_disjoint_supports"
+ },
+ {
+  "id": "EQ-S1-027",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:286-289",
+  "label": "(inline) f-GAN variational bound",
+  "latex": "D_f(p_{data}\\|p_g)\\ge\\sup_T\\E_{p_{data}}T-\\E_{p_g}f^*(T)",
+  "verified": "YES",
+  "check_in_verify_equations": "wgan_critic_and_gradient_penalty"
+ },
+ {
+  "id": "EQ-S1-028",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:289-296",
+  "label": "eq:wgan + GP",
+  "latex": "\\min_\\theta\\max_{\\norm{f}_L\\le1}\\E f(x)-\\E f(G(z));\\ \\lambda\\E(\\norm{\\nabla f(\\hat x)}-1)^2",
+  "verified": "YES",
+  "check_in_verify_equations": "wgan_critic_and_gradient_penalty"
+ },
+ {
+  "id": "EQ-S1-029",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:306-315",
+  "label": "eq:ebm",
+  "latex": "p_\\theta=\\exp(-E_\\theta)/Z_\\theta",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-030",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:316-323",
+  "label": "eq:ebm_grad",
+  "latex": "\\nabla\\log Z=-\\E_{p_\\theta}\\nabla E;\\ \\nabla\\E\\log p=-\\E_{data}\\nabla E+\\E_{model}\\nabla E",
+  "verified": "YES",
+  "check_in_verify_equations": "ebm_loglik_gradient_positive_negative_phase"
+ },
+ {
+  "id": "EQ-S1-031",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:337-343",
+  "label": "eq:score",
+  "latex": "s_\\theta=\\nabla_x\\log p_\\theta=-\\nabla_xE_\\theta",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-032",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:343-351",
+  "label": "eq:sm",
+  "latex": "\\tfrac12\\E\\norm{s-\\nabla\\log p_{data}}^2=\\E[\\Tr\\nabla s+\\tfrac12\\norm s^2]+C",
+  "verified": "YES",
+  "check_in_verify_equations": "hyvarinen_score_matching_equals_fisher_up_to_constant"
+ },
+ {
+  "id": "EQ-S1-033",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:352-354",
+  "label": "(inline) sliced score matching",
+  "latex": "\\E_v[v^\\top\\nabla_xs\\,v]",
+  "verified": "YES",
+  "check_in_verify_equations": "hutchinson_and_sliced_trace_unbiased"
+ },
+ {
+  "id": "EQ-S1-034",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:354-367",
+  "label": "eq:dsm + equivalence",
+  "latex": "\\E\\norm{s(x+\\sigma\\epsilon)+\\epsilon/\\sigma}^2;\\ =2\\cdot\\tfrac12\\text{Fisher}(p_\\sigma)+C",
+  "verified": "YES",
+  "check_in_verify_equations": "dsm_equals_esm_on_smoothed_density_up_to_constant"
+ },
+ {
+  "id": "EQ-S1-035",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:367-372",
+  "label": "eq:langevin",
+  "latex": "x_{k+1}=x_k+\\frac\\kappa2s(x_k)+\\sqrt\\kappa\\epsilon_k",
+  "verified": "YES",
+  "check_in_verify_equations": "langevin_stationary_distribution"
+ },
+ {
+  "id": "EQ-S1-036",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:384-390",
+  "label": "eq:sde_fwd + Fokker-Planck",
+  "latex": "\\partial_tp_t=-\\nabla\\cdot(fp_t)+\\tfrac12g^2\\Delta p_t",
+  "verified": "YES",
+  "check_in_verify_equations": "vp_sde_fokker_planck_and_reverse_sde_and_pf_ode"
+ },
+ {
+  "id": "EQ-S1-037",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:390-393",
+  "label": "(inline) VP and VE choices",
+  "latex": "f=-\\tfrac12\\beta x,\\ g=\\sqrt\\beta;\\ f=0,\\ g=\\sqrt{d\\sigma^2/dt}",
+  "verified": "YES",
+  "check_in_verify_equations": "vp_sde_fokker_planck_and_reverse_sde_and_pf_ode"
+ },
+ {
+  "id": "EQ-S1-038",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:393-399",
+  "label": "eq:sde_rev",
+  "latex": "dx=[f-g^2\\nabla\\log p_t]dt+g\\,d\\bar w\\ (t:T\\to0)",
+  "verified": "YES",
+  "check_in_verify_equations": "vp_sde_fokker_planck_and_reverse_sde_and_pf_ode"
+ },
+ {
+  "id": "EQ-S1-039",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:399-403",
+  "label": "(inline) weighted denoising objective",
+  "latex": "\\E_t[\\lambda(t)\\E\\norm{s(x_t,t)-\\nabla\\log p_{0t}(x_t|x_0)}^2]",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-040",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:403-412",
+  "label": "eq:pf_ode + instantaneous CoV",
+  "latex": "\\frac{dx}{dt}=f-\\tfrac12g^2\\nabla\\log p_t;\\ \\frac{d\\log p_t(x_t)}{dt}=-\\nabla\\cdot(f-\\tfrac12g^2s)",
+  "verified": "YES",
+  "check_in_verify_equations": "vp_sde_fokker_planck_and_reverse_sde_and_pf_ode; hutchinson_and_sliced_trace_unbiased"
+ },
+ {
+  "id": "EQ-S1-041",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:412-417",
+  "label": "(prose) likelihood weighting = upper bound for reverse-SDE NLL",
+  "latex": "\\lambda=g^2",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-042",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:423-426",
+  "label": "(inline) DDPM kernel, schedule",
+  "latex": "q(x_t|x_{t-1})=\\N(\\sqrt{1-\\beta_t}x_{t-1},\\beta_tI)",
+  "verified": "YES",
+  "check_in_verify_equations": "ddpm_forward_marginal_by_composing_kernels"
+ },
+ {
+  "id": "EQ-S1-043",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:426-432",
+  "label": "eq:ddpm_fwd",
+  "latex": "q(x_t|x_0)=\\N(\\sqrt{\\bar\\alpha_t}x_0,(1-\\bar\\alpha_t)I)",
+  "verified": "YES",
+  "check_in_verify_equations": "ddpm_forward_marginal_by_composing_kernels"
+ },
+ {
+  "id": "EQ-S1-044",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:433-438",
+  "label": "eq:ddpm_post",
+  "latex": "\\tilde\\mu_t=\\frac{\\sqrt{\\bar\\alpha_{t-1}}\\beta_t}{1-\\bar\\alpha_t}x_0+\\frac{\\sqrt{\\alpha_t}(1-\\bar\\alpha_{t-1})}{1-\\bar\\alpha_t}x_t,\\ \\tilde\\beta_t=\\frac{1-\\bar\\alpha_{t-1}}{1-\\bar\\alpha_t}\\beta_t",
+  "verified": "YES",
+  "check_in_verify_equations": "ddpm_posterior_mean_variance_bayes"
+ },
+ {
+  "id": "EQ-S1-045",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:439-441",
+  "label": "(inline) reverse model",
+  "latex": "p_\\theta(x_{0:T})=p(x_T)\\prod_tp_\\theta(x_{t-1}|x_t)",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-046",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:441-451",
+  "label": "eq:ddpm_vlb",
+  "latex": "-\\log p_\\theta(x_0)\\le L_T+\\sum_{t=2}^TL_{t-1}+L_0",
+  "verified": "YES",
+  "check_in_verify_equations": "repo_vlb_bpd_assembly_oracle_delta_data"
+ },
+ {
+  "id": "EQ-S1-047",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:452-459",
+  "label": "(display) mu_theta via eps and VLB weight",
+  "latex": "\\mu_\\theta=\\frac1{\\sqrt{\\alpha_t}}(x_t-\\frac{\\beta_t}{\\sqrt{1-\\bar\\alpha_t}}\\epsilon_\\theta);\\ \\frac{\\beta_t^2}{2\\sigma_t^2\\alpha_t(1-\\bar\\alpha_t)}",
+  "verified": "YES",
+  "check_in_verify_equations": "ddpm_eps_parameterisation_and_vlb_weight"
+ },
+ {
+  "id": "EQ-S1-048",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:460-465",
+  "label": "eq:ddpm_simple",
+  "latex": "\\mathcal L_{simple}",
+  "verified": "YES",
+  "check_in_verify_equations": "ddpm_eps_parameterisation_and_vlb_weight"
+ },
+ {
+  "id": "EQ-S1-049",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:465-469",
+  "label": "(prose) L_simple as weighted DSM; score = -eps/sqrt(1-abar)",
+  "latex": "s_\\theta=-\\epsilon_\\theta/\\sqrt{1-\\bar\\alpha_t}",
+  "verified": "YES",
+  "check_in_verify_equations": "ddpm_eps_parameterisation_and_vlb_weight"
+ },
+ {
+  "id": "EQ-S1-050",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:470-474",
+  "label": "(prose) VDM schedule invariance; Kingma & Gao ELBO reading",
+  "latex": "\\text{depends only on SNR endpoints}",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-051",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:476-488",
+  "label": "eq:ddim",
+  "latex": "\\sigma_{\\tau_i}=\\eta\\sqrt{\\frac{1-\\bar\\alpha_{\\tau_{i-1}}}{1-\\bar\\alpha_{\\tau_i}}(1-\\frac{\\bar\\alpha_{\\tau_i}}{\\bar\\alpha_{\\tau_{i-1}}})}",
+  "verified": "YES",
+  "check_in_verify_equations": "ddim_eta_family_sigma_and_marginals; repo_samplers_with_bayes_optimal_eps_on_gaussian_data"
+ },
+ {
+  "id": "EQ-S1-052",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:489-497",
+  "label": "(prose) eta=1 / eta=0 claims",
+  "latex": "\\eta=1\\Rightarrow\\sigma^2=\\tilde\\beta;\\ \\eta=0\\ \\text{Euler}",
+  "verified": "YES",
+  "check_in_verify_equations": "ddim_eta_family_sigma_and_marginals"
+ },
+ {
+  "id": "EQ-S1-053",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:499-505",
+  "label": "eq:cfg",
+  "latex": "\\tilde\\epsilon=\\epsilon(\\varnothing)+w[\\epsilon(c)-\\epsilon(\\varnothing)],\\ w_{HS}=w-1",
+  "verified": "YES",
+  "check_in_verify_equations": "cfg_convention_and_tilt"
+ },
+ {
+  "id": "EQ-S1-054",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:506-511",
+  "label": "(prose) CFG tilt",
+  "latex": "\\nabla\\log[p_t(x_t|c)p_t(c|x_t)^{w-1}]",
+  "verified": "YES",
+  "check_in_verify_equations": "cfg_convention_and_tilt"
+ },
+ {
+  "id": "EQ-S1-055",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:513-519",
+  "label": "(prose) FM path convention",
+  "latex": "x_t=(1-t)x_0+tx_1",
+  "verified": "YES",
+  "check_in_verify_equations": "flow_matching_linear_path_marginal_velocity"
+ },
+ {
+  "id": "EQ-S1-056",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:520-529",
+  "label": "eq:fm",
+  "latex": "\\mathcal L_{CFM}=\\E\\norm{v_\\theta((1-t)x_0+tx_1,t)-(x_1-x_0)}^2",
+  "verified": "YES",
+  "check_in_verify_equations": "flow_matching_linear_path_marginal_velocity"
+ },
+ {
+  "id": "EQ-S1-057",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:535-544",
+  "label": "eq:bpd",
+  "latex": "\\frac{-\\E_u\\log p_\\theta(y)+D\\log256}{D\\log2}",
+  "verified": "YES",
+  "check_in_verify_equations": "bits_per_dim_dequantisation_and_unit_conversions"
+ },
+ {
+  "id": "EQ-S1-058",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:544-548",
+  "label": "(prose) all bounds on the same discrete code length",
+  "latex": "-",
+  "verified": "YES-WITH-WORDING-FIX",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S1-059",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:548-553",
+  "label": "eq:ppl",
+  "latex": "\\mathrm{PPL}=\\exp(-\\frac1L\\sum\\log p),\\ =2^{\\text{bits/token}}",
+  "verified": "YES",
+  "check_in_verify_equations": "bits_per_dim_dequantisation_and_unit_conversions"
+ },
+ {
+  "id": "EQ-S1-060",
+  "document": "S1",
+  "location": "paper/sections/03_foundations.tex:558-577",
+  "label": "tab:foundations_summary divergence column",
+  "latex": "\\text{forward KL / JSD / }W_1\\text{ / Fisher}",
+  "verified": "YES",
+  "check_in_verify_equations": null
+ },
+ {
+  "id": "EQ-S5-001",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:35-39",
+  "label": "(inline) uniform dequantisation bound",
+  "latex": "\\mathbf u\\sim\\mathcal U[0,1)^D;\\ \\E_{\\mathbf u}[\\log p(\\x+\\mathbf u)]\\le\\log P(\\x)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-002",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:39-46",
+  "label": "(prose) all bits/dim values are upper bounds on the same discrete code length",
+  "latex": "\\text{bpd}_{\\rm AR}=\\text{exact};\\ \\text{bpd}_{\\rm flow,VAE,diff}\\ge -\\log_2 P_{\\btheta}(\\x)/D",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S5-003",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:49-53",
+  "label": "(inline) IWAE bound",
+  "latex": "\\log\\ptheta(\\x)\\ge\\E\\big[\\log\\tfrac1k\\sum_{i=1}^k\\ptheta(\\x,\\z_i)/\\qphi(\\z_i\\mid\\x)\\big]",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-004",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:57-59",
+  "label": "(prose) weighted diffusion objectives are ELBOs under noise augmentation",
+  "latex": "\\mathcal L_w=\\text{ELBO of noise-augmented data}\\ \\text{iff } w \\text{ monotone}",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S5-005",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:59-63",
+  "label": "(prose) perplexity and cross-tokeniser bits per byte",
+  "latex": "\\mathrm{PPL}=\\exp(-\\tfrac1L\\textstyle\\sum_i\\log p(x_i\\mid\\x_{<i}));\\ \\text{bpb}=\\tfrac{L}{B\\ln 2}\\cdot\\tfrac1L\\sum_i(-\\log p)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-006",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:79-83",
+  "label": "eq:is",
+  "latex": "\\mathrm{IS}=\\exp\\big(\\E_{\\x\\sim\\ptheta}[\\KL{p(y\\mid\\x)}{p(y)}]\\big),\\ p(y)=\\E_{\\x}[p(y\\mid\\x)]",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-007",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:87-94",
+  "label": "eq:fid",
+  "latex": "\\mathrm{FID}=\\norm{\\mu_r-\\mu_g}_2^2+\\Tr\\big(\\Sigma_r+\\Sigma_g-2(\\Sigma_r\\Sigma_g)^{1/2}\\big)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-008",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:97-100",
+  "label": "(prose) FID upward bias ~1/N",
+  "latex": "\\E[\\widehat{\\mathrm{FID}}_N]\\approx\\mathrm{FID}_\\infty+c/N",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-009",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:109-114",
+  "label": "(prose) CMMD and KID as unbiased MMD^2 estimators",
+  "latex": "\\widehat{\\mathrm{MMD}}^2_u=\\tfrac{1}{m(m-1)}\\textstyle\\sum_{i\\ne j}[k(x_i,x_j)+k(y_i,y_j)]-\\tfrac{2}{m(m-1)}\\sum_{i\\ne j}k(x_i,y_j),\\ k(x,y)=(x^\\top y/d+1)^3",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-010",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:131-134",
+  "label": "(prose) Sajjadi precision/recall",
+  "latex": "P=\\text{mass of }Q\\text{ within supp }P_r,\\ R=\\text{converse};\\ \\text{estimated on }k\\text{-means histograms}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-011",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:134-142",
+  "label": "(prose) improved precision/recall, k-NN manifolds",
+  "latex": "\\mathrm{prec}=\\tfrac1M\\textstyle\\sum_j\\mathbb 1[\\exists i:\\norm{\\phi_{g,j}-\\phi_{r,i}}\\le\\mathrm{NND}_k(\\phi_{r,i})],\\ k=3",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-012",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:143-148",
+  "label": "(prose) Naeem et al. failure modes; density and coverage",
+  "latex": "\\mathrm{density}=\\tfrac{1}{kM}\\textstyle\\sum_j\\sum_i\\mathbb 1[\\phi_{g,j}\\in B(\\phi_{r,i},\\mathrm{NND}_k)],\\ \\mathrm{coverage}=\\tfrac1N\\sum_i\\mathbb 1[\\exists j:\\phi_{g,j}\\in B(\\phi_{r,i},\\mathrm{NND}_k)]",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S5-013",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:207-213",
+  "label": "eq:clipscore",
+  "latex": "\\mathrm{CLIPScore}(\\x,\\cond)=\\kappa\\max(\\cos(E_I(\\x),E_T(\\cond)),0),\\ \\kappa\\in\\{2.5,100\\}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-014",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:238-240,253-255",
+  "label": "(prose) Bradley-Terry / Elo rankings for pairwise battles",
+  "latex": "P(i\\succ j)=\\sigma(\\theta_i-\\theta_j)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-015",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:282-286",
+  "label": "(prose) cost of 50k-sample FID at 1000 NFE vs GAN",
+  "latex": "\\text{cost ratio}\\approx 1000\\times(\\text{UNet cost}/\\text{generator cost})",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S5-016",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:328",
+  "label": "(table) Perplexity 'Measures: Per-token cross-entropy'",
+  "latex": "\\mathrm{PPL}=\\exp(\\text{per-token cross-entropy})",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S5-017",
+  "document": "S5",
+  "location": "paper/sections/07_evaluation.tex:333",
+  "label": "(table) Precision/recall failure 'recall blind to copying'",
+  "latex": "-",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S10-001",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:27-30",
+  "label": "eq:sys_pretrain",
+  "latex": "\\Lcal_{\\mathrm{PT}}(\\btheta)=\\E_{\\x\\sim\\pdata}\\big[\\textstyle\\sum_{i=1}^{n}\\log\\ptheta(x_i\\mid\\x_{<i})\\big]",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S10-002",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:31",
+  "label": "(inline) equivalence with forward KL",
+  "latex": "\\argmax\\E_{\\pdata}\\log\\ptheta=\\argmin\\KL{\\pdata}{\\ptheta}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S10-003",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:34-37",
+  "label": "(prose) scaling-law constants",
+  "latex": "L(N,D)\\ \\text{power laws};\\ D_{\\rm opt}/N_{\\rm opt}\\approx 20",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S10-004",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:55-58",
+  "label": "eq:sys_sft",
+  "latex": "\\Lcal_{\\mathrm{SFT}}(\\btheta)=\\E_{(\\cond,\\y)}\\big[\\textstyle\\sum_i\\log\\ptheta(y_i\\mid\\y_{<i},\\cond)\\big]",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S10-005",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:81-88",
+  "label": "eq:sys_bt",
+  "latex": "p(\\y_w\\succ\\y_l\\mid\\cond)=\\sigma(r(\\cond,\\y_w)-r(\\cond,\\y_l));\\ \\Lcal_{\\rm RM}=-\\E\\log\\sigma(r_w-r_l)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S10-006",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:90-99",
+  "label": "eq:sys_rlhf",
+  "latex": "\\max_{\\btheta}\\E_{\\cond,\\y\\sim\\pi_{\\btheta}}[r]-\\beta\\E_{\\cond}[\\KL{\\pi_{\\btheta}(\\cdot\\mid\\cond)}{\\pi_{\\rm ref}(\\cdot\\mid\\cond)}]",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S10-007",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:100-106",
+  "label": "eq:sys_opt_policy",
+  "latex": "\\pi^*(\\y\\mid\\cond)=Z(\\cond)^{-1}\\pi_{\\rm ref}(\\y\\mid\\cond)\\exp(r(\\cond,\\y)/\\beta)",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S10-008",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:106-108",
+  "label": "(inline) DPO reward inversion",
+  "latex": "r(\\cond,\\y)=\\beta\\log\\frac{\\pi^*(\\y\\mid\\cond)}{\\pi_{\\rm ref}(\\y\\mid\\cond)}+\\beta\\log Z(\\cond)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S10-009",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:110-114",
+  "label": "eq:sys_dpo",
+  "latex": "\\Lcal_{\\rm DPO}=-\\E\\log\\sigma\\big(\\beta\\log\\tfrac{\\pi_{\\btheta}(\\y_w)}{\\pi_{\\rm ref}(\\y_w)}-\\beta\\log\\tfrac{\\pi_{\\btheta}(\\y_l)}{\\pi_{\\rm ref}(\\y_l)}\\big)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S10-010",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:118-122",
+  "label": "(prose) verifiable rewards, group-relative advantages, o1/R1 claim",
+  "latex": "\\hat A_i=(r_i-\\mathrm{mean}(r_{1:G}))/\\mathrm{std}(r_{1:G})",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S10-011",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:135-139",
+  "label": "(prose) beta->0 limit of the tilt",
+  "latex": "\\lim_{\\beta\\to0}\\pi^*(\\cdot\\mid\\cond)=\\pi_{\\rm ref}(\\cdot\\mid\\cond,\\ \\y\\in\\argmax_{\\y\\in\\mathrm{supp}\\,\\pi_{\\rm ref}}r)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S10-012",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:146-148",
+  "label": "(inline) dense retriever",
+  "latex": "p_{\\bm\\xi}(\\z\\mid\\cond)\\propto\\exp(f(\\cond)^\\top g(\\z))",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S10-013",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:149-155",
+  "label": "eq:sys_rag",
+  "latex": "\\ptheta(\\y\\mid\\cond)\\approx\\textstyle\\sum_{\\z\\in\\mathrm{top}\\text{-}k(\\cond)}\\tilde p_{\\bm\\xi}(\\z\\mid\\cond)\\ptheta(\\y\\mid\\cond,\\z)",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S10-014",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:171-172",
+  "label": "(prose) differentiability of the truncated marginal",
+  "latex": "\\partial/\\partial\\bm\\xi\\ \\text{flows only through}\\ \\tilde p_{\\bm\\xi}(\\z\\mid\\cond),\\ \\z\\in\\mathrm{top}\\text{-}k",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S10-015",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:212-219",
+  "label": "eq:sys_agent",
+  "latex": "p_{\\btheta}(a_{1:T},o_{1:T}\\mid\\cond)=\\textstyle\\prod_{t=1}^{T}\\pi_{\\btheta}(a_t\\mid\\cond,h_t)\\,\\mathcal T(o_t\\mid h_t,a_t)",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S10-016",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:247-251",
+  "label": "(prose) model-collapse recursion",
+  "latex": "\\hat\\sigma^2_{k+1}=\\hat\\sigma^2_k\\,\\chi^2_{n-1}/n\\ \\Rightarrow\\ \\E\\hat\\sigma^2_k=\\sigma_0^2((n-1)/n)^k\\to0",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S10-017",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:255-257",
+  "label": "(prose) 'eq:mle_kl guarantees the student converges to the channel output'",
+  "latex": "\\argmin_{\\btheta}\\KL{q_{\\rm syn}}{\\ptheta}=q_{\\rm syn}\\ \\text{if}\\ q_{\\rm syn}\\in\\{\\ptheta\\}",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S10-018",
+  "document": "S10",
+  "location": "paper/sections/10_systems.tex:335-337",
+  "label": "(prose) 'Perplexity measures eq:sys_pretrain exactly'",
+  "latex": "\\mathrm{PPL}=\\exp\\big(-\\textstyle\\sum_{\\x}\\sum_i\\log\\ptheta(x_i\\mid\\x_{<i})/\\sum_{\\x}|\\x|\\big)",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-001",
+  "document": "S4",
+  "location": "paper/sections/06a_autoregressive.tex:44-47",
+  "label": "(inline) chain rule",
+  "latex": "\\ptheta(\\x)=\\textstyle\\prod_{i=1}^N\\ptheta(x_i\\mid\\x_{<i})",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-002",
+  "document": "S4",
+  "location": "paper/sections/06a_autoregressive.tex:55-58",
+  "label": "(prose) teacher forcing decomposes into N 'independent' classification losses",
+  "latex": "-\\log\\ptheta(\\x)=\\textstyle\\sum_i-\\log\\ptheta(x_i\\mid\\x_{<i})",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-003",
+  "document": "S4",
+  "location": "paper/sections/06a_autoregressive.tex:72-77",
+  "label": "(prose) receptive fields; O(N^2) attention; causal mask",
+  "latex": "\\mathrm{RF}_{\\rm dilated}=1+\\textstyle\\sum_\\ell d_\\ell\\ (=1024\\ \\text{for}\\ 1,\\dots,512);\\ \\mathcal O(N^2)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-004",
+  "document": "S4",
+  "location": "paper/sections/06a_autoregressive.tex:151-160",
+  "label": "(prose) MLE = KL up to constant; CE convex in logits",
+  "latex": "-\\E\\log\\ptheta=H(\\pdata)+\\KL{\\pdata}{\\ptheta};\\ \\ell(\\mathbf z)=\\mathrm{lse}(\\mathbf z)-z_y\\ \\text{convex}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-005",
+  "document": "S4",
+  "location": "paper/sections/06a_autoregressive.tex:183-185",
+  "label": "(inline) NFE for 256x256 RGB",
+  "latex": "N=256\\cdot256\\cdot3=196{,}608",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-006",
+  "document": "S4",
+  "location": "paper/sections/06a_autoregressive.tex:267-271",
+  "label": "(inline) KV-cache size",
+  "latex": "2\\times L\\times d\\times N",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-007",
+  "document": "S4",
+  "location": "paper/sections/06a_autoregressive.tex:274-277",
+  "label": "(prose) speculative decoding leaves the output distribution unchanged",
+  "latex": "\\text{accept }\\tilde x\\sim q\\text{ w.p. }\\min(1,p(\\tilde x)/q(\\tilde x));\\ \\text{else draw from }\\frac{(p-q)_+}{\\norm{(p-q)_+}_1}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-008",
+  "document": "S4",
+  "location": "paper/sections/06b_vae.tex:29-37",
+  "label": "eq:vae_elbo + gap",
+  "latex": "\\E_{q}[\\log p(\\x\\mid\\z)]-\\KL{q(\\z\\mid\\x)}{p(\\z)}\\le\\log p(\\x);\\ \\text{gap}=\\KL{q(\\z\\mid\\x)}{p(\\z\\mid\\x)}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-009",
+  "document": "S4",
+  "location": "paper/sections/06b_vae.tex:42-45",
+  "label": "(inline) Gaussian KL and reparameterisation",
+  "latex": "\\tfrac12\\textstyle\\sum_j(\\mu_j^2+\\sigma_j^2-1-\\log\\sigma_j^2);\\ \\z=\\bm\\mu+\\bm\\sigma\\odot\\eps",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-010",
+  "document": "S4",
+  "location": "paper/sections/06b_vae.tex:55-58",
+  "label": "(inline) IWAE",
+  "latex": "\\log\\tfrac1K\\textstyle\\sum_k p(\\z_k)\\ptheta(\\x\\mid\\z_k)/\\qphi(\\z_k\\mid\\x)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-011",
+  "document": "S4",
+  "location": "paper/sections/06b_vae.tex:63-70",
+  "label": "(prose) beta-VAE bound direction",
+  "latex": "\\E_q\\log p(\\x\\mid\\z)-\\beta\\KL{q}{p(\\z)}=\\mathrm{ELBO}-(\\beta-1)\\KL{q}{p(\\z)}",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-012",
+  "document": "S4",
+  "location": "paper/sections/06b_vae.tex:81-90",
+  "label": "eq:vqvae",
+  "latex": "\\log\\ptheta(\\x\\mid\\z_q)-\\norm{\\mathrm{sg}[\\z_e]-\\mathbf e_{k^*}}_2^2-\\gamma\\norm{\\z_e-\\mathrm{sg}[\\mathbf e_{k^*}]}_2^2",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-013",
+  "document": "S4",
+  "location": "paper/sections/06b_vae.tex:179-185,199-203",
+  "label": "(prose) aggregate posterior; conditional-mean blur argument",
+  "latex": "q(\\z)=\\E_{\\pdata}[\\qphi(\\z\\mid\\x)];\\ \\argmax_{\\bm\\mu}\\E[\\log\\N(\\x;\\bm\\mu,\\sigma^2 I)\\mid\\z]=\\E[\\x\\mid\\z]",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-014",
+  "document": "S4",
+  "location": "paper/sections/06c_gan.tex:24-28",
+  "label": "eq:gan_minimax",
+  "latex": "\\min_G\\max_D\\E_{\\pdata}\\log D+\\E_{p(\\z)}\\log(1-D(G(\\z)))",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-015",
+  "document": "S4",
+  "location": "paper/sections/06c_gan.tex:29-35",
+  "label": "(inline) D*, JS identity, non-saturating loss",
+  "latex": "D^*=\\frac{\\pdata}{\\pdata+p_g};\\ V(D^*,G)=2\\JS{\\pdata}{p_g}-\\log4;\\ -\\E\\log D(G(\\z))",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-016",
+  "document": "S4",
+  "location": "paper/sections/06c_gan.tex:40-43",
+  "label": "(prose) JS saturates at log 2 for disjoint supports",
+  "latex": "\\JS{P}{Q}=\\log2\\ \\text{if}\\ P\\perp Q",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-017",
+  "document": "S4",
+  "location": "paper/sections/06c_gan.tex:44-50",
+  "label": "eq:wgan-family",
+  "latex": "W_1(\\pdata,p_g)=\\sup_{\\norm f_L\\le1}\\E_{\\pdata}f-\\E_{p(\\z)}f(G(\\z))",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-018",
+  "document": "S4",
+  "location": "paper/sections/06c_gan.tex:52-57",
+  "label": "(inline) gradient penalty; hinge loss",
+  "latex": "\\lambda\\E_{\\hat\\x}[(\\norm{\\nabla f(\\hat\\x)}_2-1)^2];\\ \\E\\max(0,1-D(\\x))+\\E\\max(0,1+D(G(\\z)))",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-019",
+  "document": "S4",
+  "location": "paper/sections/06c_gan.tex:59-66",
+  "label": "(inline) R1 penalty; TTUR direction",
+  "latex": "R_1=\\tfrac\\gamma2\\E_{\\pdata}\\norm{\\nabla_\\x D(\\x)}^2",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-020",
+  "document": "S4",
+  "location": "paper/sections/06c_gan.tex:85-87",
+  "label": "(inline) cycle-consistency loss",
+  "latex": "\\E_x\\norm{F(G(x))-x}_1+\\E_y\\norm{G(F(y))-y}_1",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-021",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:25-48",
+  "label": "eq:flow_cov + composition",
+  "latex": "\\log\\ptheta(\\x)=\\log p_Z(f(\\x))+\\log\\abs{\\det\\partial f/\\partial\\x}=\\log p_Z(\\z)-\\log\\abs{\\det\\partial g/\\partial\\z};\\ \\sum_k\\log\\abs{\\det\\partial g_k/\\partial\\mathbf h_{k-1}}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-022",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:50-64",
+  "label": "(inline) NICE additive coupling; eq:affine_coupling; inverse",
+  "latex": "\\mathbf h'_B=\\mathbf h_B\\odot e^{s(\\mathbf h_A)}+t(\\mathbf h_A),\\ \\log\\abs{\\det J}=\\textstyle\\sum_j s_j;\\ \\mathbf h_B=(\\mathbf h'_B-t)\\odot e^{-s}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-023",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:71-78",
+  "label": "(inline) Glow 1x1 conv log-det; ActNorm",
+  "latex": "h\\,w\\log\\abs{\\det\\mathbf W};\\ \\mathbf W=\\mathbf P\\mathbf L(\\mathbf U+\\mathrm{diag}\\,\\mathbf s)\\Rightarrow\\log\\abs{\\det\\mathbf W}=\\textstyle\\sum\\log\\abs{s_c}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-024",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:80-87",
+  "label": "(inline) autoregressive flow Jacobian",
+  "latex": "z_i=(x_i-\\mu_i(\\x_{<i}))/\\sigma_i(\\x_{<i}),\\ \\det=\\textstyle\\prod_i\\sigma_i^{-1}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-025",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:93-99",
+  "label": "(inline) instantaneous change of variables; Hutchinson",
+  "latex": "\\frac{\\dd\\log p(\\mathbf h_t)}{\\dd t}=-\\Tr\\frac{\\partial\\mathbf v}{\\partial\\mathbf h};\\ \\Tr A=\\E_{\\mathbf v}[\\mathbf v^\\top A\\mathbf v]",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-026",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:106-117",
+  "label": "(inline) dequantisation; Flow++ 3.49->3.08",
+  "latex": "\\tilde\\x=\\x+\\mathbf u;\\ \\E\\log p(\\tilde\\x)\\le\\log P(\\x)",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-027",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:189-207",
+  "label": "(prose) forward vs reverse KL; logit preprocessing; tanh bound",
+  "latex": "\\x\\mapsto\\operatorname{logit}(\\alpha+(1-2\\alpha)\\x),\\ \\alpha=0.05",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-028",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:211-213",
+  "label": "(prose) 'only deep family with exact, efficient log p'",
+  "latex": "-",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-029",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:230-234",
+  "label": "(prose) manifold data push the log-determinant to -infinity",
+  "latex": "\\log\\abs{\\det\\partial g/\\partial\\z}\\to-\\infty\\iff\\log\\abs{\\det\\partial f/\\partial\\x}\\to+\\infty",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-030",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:277-282",
+  "label": "(inline) probability density distillation",
+  "latex": "\\min\\KL{p_{\\rm student}}{p_{\\rm teacher}}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-031",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:289-301",
+  "label": "(inline) flow-matching path and target",
+  "latex": "\\x_t=(1-t)\\z+t\\x,\\ \\E\\norm{v_{\\btheta}(\\x_t,t)-(\\x-\\z)}^2\\ \\ (\\text{cited as eq:fm})",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-032",
+  "document": "S4",
+  "location": "paper/sections/06d_flows.tex:315-318",
+  "label": "(inline) bits/dim from the dequantised input",
+  "latex": "(-\\log\\ptheta(\\tilde\\x)+D\\log256)/(D\\log2)",
+  "verified": "NO"
+ },
+ {
+  "id": "EQ-S4-033",
+  "document": "S4",
+  "location": "paper/sections/06e_ebm_score.tex:22-44",
+  "label": "eq:ebm_def, eq:ebm_grad_local, EBM score",
+  "latex": "\\ptheta=e^{-E}/Z;\\ \\nabla_{\\btheta}\\log\\ptheta(\\x)=-\\nabla_{\\btheta}E(\\x)+\\E_{\\ptheta}\\nabla_{\\btheta}E;\\ \\nabla_\\x\\log\\ptheta=-\\nabla_\\x E",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-034",
+  "document": "S4",
+  "location": "paper/sections/06e_ebm_score.tex:45-51",
+  "label": "eq:ebm_langevin",
+  "latex": "\\x_{k+1}=\\x_k-\\tfrac\\kappa2\\nabla_\\x E(\\x_k)+\\sqrt\\kappa\\eps_k",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-035",
+  "document": "S4",
+  "location": "paper/sections/06e_ebm_score.tex:52-54,64-66,141-142",
+  "label": "(inline) RBM energy; JEM energy; product of experts",
+  "latex": "E=-\\mathbf v^\\top W\\mathbf h-\\mathbf b^\\top\\mathbf v-\\mathbf c^\\top\\mathbf h;\\ E(\\x)=-\\log\\textstyle\\sum_y e^{f(\\x)_y};\\ e^{-(E_1+E_2)}\\propto p_1p_2",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-036",
+  "document": "S4",
+  "location": "paper/sections/06e_ebm_score.tex:200-209",
+  "label": "(inline) IGEBM loss and decoupled noise",
+  "latex": "E(\\x)-E(\\x')+\\alpha(E(\\x)^2+E(\\x')^2);\\ \\text{step }10,\\ \\text{noise }0.005",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-037",
+  "document": "S4",
+  "location": "paper/sections/06e_ebm_score.tex:249-257",
+  "label": "eq:sm_local; sliced SM",
+  "latex": "\\E_{\\pdata}[\\tfrac12\\norm{\\score}^2+\\Tr\\nabla_\\x\\score]=\\tfrac12\\E\\norm{\\score-\\nabla\\log\\pdata}^2-\\tfrac12\\E\\norm{\\nabla\\log\\pdata}^2",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-038",
+  "document": "S4",
+  "location": "paper/sections/06e_ebm_score.tex:258-268",
+  "label": "eq:dsm_local and its minimiser",
+  "latex": "\\E\\norm{\\score(\\x+\\sigma\\eps,\\sigma)+\\eps/\\sigma}^2;\\ \\score^*=\\nabla\\log(\\pdata*\\N(0,\\sigma^2I))",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-039",
+  "document": "S4",
+  "location": "paper/sections/06e_ebm_score.tex:273-291",
+  "label": "(inline) annealed Langevin; lambda=sigma^2; DSM <-> DDPM",
+  "latex": "\\kappa_i\\propto\\sigma_i^2;\\ \\lambda(\\sigma)=\\sigma^2;\\ \\score=-\\epstheta/\\sigma\\Rightarrow\\tfrac1{\\sigma^2}\\E\\norm{\\eps-\\epstheta}^2",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-040",
+  "document": "S4",
+  "location": "paper/sections/06e_ebm_score.tex:293-306",
+  "label": "(inline) VE SDE; likelihood weighting bound",
+  "latex": "\\mathbf f=0,\\ g^2=\\dd\\sigma^2/\\dd t;\\ \\lambda(t)=g(t)^2",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-041",
+  "document": "S4",
+  "location": "paper/sections/06e_ebm_score.tex:362-370",
+  "label": "(inline) weighted multi-scale DSM",
+  "latex": "\\E_t\\lambda(t)\\E\\norm{\\score(\\x_t,t)-\\nabla_{\\x_t}\\log p_t(\\x_t\\mid\\x_0)}^2",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-042",
+  "document": "S4",
+  "location": "paper/sections/06e_ebm_score.tex:387-389",
+  "label": "(prose) posterior score = prior score + likelihood gradient; 'no retraining'",
+  "latex": "\\nabla\\log p(\\x\\mid\\y)=\\nabla\\log p(\\x)+\\nabla\\log p(\\y\\mid\\x)",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-043",
+  "document": "S4",
+  "location": "paper/sections/06e_ebm_score.tex:416-421",
+  "label": "(prose) score from the eps-network by division",
+  "latex": "\\score(\\x_t,t)=-\\epstheta(\\x_t,t)/\\sqrt{1-\\abar_t}",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-044",
+  "document": "S4",
+  "location": "paper/sections/06g_diffusion.tex:28-36",
+  "label": "(inline) DDPM forward, closed form, reverse",
+  "latex": "q(\\x_t\\mid\\x_{t-1})=\\N(\\sqrt{1-\\beta_t}\\x_{t-1},\\beta_tI);\\ q(\\x_t\\mid\\x_0)=\\N(\\sqrt{\\abar_t}\\x_0,(1-\\abar_t)I)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-045",
+  "document": "S4",
+  "location": "paper/sections/06g_diffusion.tex:37-48",
+  "label": "(inline) v-parameterisation; cosine schedule; posterior variance",
+  "latex": "\\mathbf v=\\sqrt{\\abar_t}\\eps-\\sqrt{1-\\abar_t}\\x_0;\\ \\tilde\\beta_t=\\beta_t\\frac{1-\\abar_{t-1}}{1-\\abar_t}",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-046",
+  "document": "S4",
+  "location": "paper/sections/06g_diffusion.tex:54-66",
+  "label": "(prose) DDIM eta=1 / eta=0 claims and numbers",
+  "latex": "\\sigma_{\\tau_i}(\\eta)=\\eta\\sqrt{\\tfrac{1-\\abar_{\\tau_{i-1}}}{1-\\abar_{\\tau_i}}}\\sqrt{1-\\tfrac{\\abar_{\\tau_i}}{\\abar_{\\tau_{i-1}}}}",
+  "verified": "YES-WITH-WORDING-FIX"
+ },
+ {
+  "id": "EQ-S4-047",
+  "document": "S4",
+  "location": "paper/sections/06g_diffusion.tex:75-86",
+  "label": "(inline) classifier guidance; CFG; tilted score",
+  "latex": "\\tilde\\eps=\\epstheta(\\varnothing)+w[\\epstheta(\\cond)-\\epstheta(\\varnothing)];\\ \\nabla\\log p_t(\\x_t\\mid\\cond)+(w-1)\\nabla\\log p_t(\\cond\\mid\\x_t)",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-048",
+  "document": "S4",
+  "location": "paper/sections/06g_diffusion.tex:205-216",
+  "label": "(inline) VLB decomposition; lambda_t; L_simple",
+  "latex": "\\lambda_t=\\frac{\\beta_t^2}{2\\sigma_t^2\\alpha_t(1-\\abar_t)};\\ \\Lcal_{\\rm simple}=\\E\\norm{\\eps-\\epstheta(\\x_t,t)}^2",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-049",
+  "document": "S4",
+  "location": "paper/sections/06g_diffusion.tex:217-224",
+  "label": "(prose) reported likelihoods; monotone weightings",
+  "latex": "3.70/13.51;\\ \\le3.75/3.17;\\ 2.65\\ (\\text{no aug}),\\ 2.49\\ (\\text{aug})",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-050",
+  "document": "S4",
+  "location": "paper/sections/06h_foundation.tex:39-46",
+  "label": "(inline) LLM log-likelihood",
+  "latex": "\\log\\ptheta(\\x)=\\textstyle\\sum_i\\log\\ptheta(x_i\\mid\\x_{<i})",
+  "verified": "YES"
+ },
+ {
+  "id": "EQ-S4-051",
+  "document": "S4",
+  "location": "paper/sections/06h_foundation.tex:113-117,159-164",
+  "label": "(prose/inline) symmetric InfoNCE; conditional denoising with frozen text encoder",
+  "latex": "\\E\\norm{\\eps-\\epstheta(\\z_t,t,\\tau(\\cond))}^2",
+  "verified": "YES"
+ }
+]

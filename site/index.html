@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ROSE explorer: generative AI, one knob at a time</title>
+<meta name="description" content="Interactive explorer and verified notebooks for the ROSE survey of generative models: routes around the likelihood, objectives, samplers, evaluation and systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f8fafc;--panel:#ffffff;--ink:#0f172a;--muted:#475569;--line:#e2e8f0;--accent:#f97316;--accent-ink:#ffffff;
+      --accent-soft:#fff1e6;--blue:#2563eb;--blue-soft:#e8efff;--radius:14px;--shadow:0 1px 2px rgba(15,23,42,.06),0 6px 24px rgba(15,23,42,.06)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b1020;--panel:#121a2e;--ink:#e5e9f2;--muted:#9aa6bd;
+      --line:#24304a;--accent:#fb923c;--accent-ink:#111;--accent-soft:#2a1d12;--blue:#7aa2ff;--blue-soft:#17223f;--shadow:none}}
+:root[data-theme=dark]{--bg:#0b1020;--panel:#121a2e;--ink:#e5e9f2;--muted:#9aa6bd;--line:#24304a;--accent:#fb923c;
+      --accent-ink:#111;--accent-soft:#2a1d12;--blue:#7aa2ff;--blue-soft:#17223f;--shadow:none}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:var(--blue)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;gap:18px;height:58px}
+.logo{font-weight:700;letter-spacing:.2px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:8px}
+.logo .dot{width:12px;height:12px;border-radius:4px;background:linear-gradient(135deg,var(--accent),var(--blue))}
+nav{display:flex;gap:16px;margin-left:auto;flex-wrap:wrap}
+nav a{color:var(--muted);text-decoration:none;font-weight:500;font-size:15px}
+nav a:hover{color:var(--ink)}
+.hero{padding:56px 0 28px}
+.eyebrow{display:inline-block;font-weight:600;font-size:13px;color:var(--accent);background:var(--accent-soft);padding:4px 10px;border-radius:999px}
+h1{font-size:clamp(30px,4.6vw,50px);line-height:1.1;margin:14px 0 14px;letter-spacing:-.5px}
+.lead{font-size:clamp(16px,2vw,19px);color:var(--muted);max-width:820px;margin:0 0 22px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--accent-ink);border:1px solid var(--accent);
+     text-decoration:none;font-weight:600;padding:10px 16px;border-radius:10px;font-size:15px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.small{padding:6px 11px;font-size:13.5px;border-radius:8px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.stats{display:flex;gap:28px;flex-wrap:wrap;margin-top:26px;color:var(--muted);font-size:14px}
+.stats b{display:block;color:var(--ink);font-size:22px}
+section{padding:34px 0}
+h2{font-size:clamp(22px,3vw,30px);margin:0 0 6px;letter-spacing:-.3px}
+.sub{color:var(--muted);margin:0 0 22px;max-width:820px}
+ol.chain{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);position:relative}
+.stage .step{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--blue-soft);color:var(--blue);font-weight:700;font-size:13px}
+.stage h3{margin:8px 0 4px;font-size:17px}
+.stage p{margin:0;color:var(--muted);font-size:14px}
+.stage p.tags{margin-top:8px;font-size:12.5px;color:var(--accent)}
+.app-shell{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.app-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+.app-bar i{width:10px;height:10px;border-radius:50%;background:var(--line);display:inline-block}
+.app-bar span{margin-left:8px}
+.app-frame{display:block;width:100%;height:860px;border:0;background:#fff}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:0;}
+.preview{margin:0;padding:16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.preview img{width:100%;height:auto;border-radius:8px;border:1px solid var(--line);background:#fff}
+.preview figcaption{font-size:14px;color:var(--muted);margin-top:10px}
+.preview figcaption b{color:var(--ink)}
+.preview .lead-tag{display:block;font-size:12.5px;color:var(--accent);margin:2px 0 6px}
+.preview p{margin:0 0 6px}
+.run{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.run code{font-size:.95em}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 14px;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.card .num{font-weight:700;color:var(--accent);font-size:13px}
+.card h3{margin:4px 0 6px;font-size:16.5px}
+.card p{margin:0 0 12px;color:var(--muted);font-size:14px;flex:1}
+.card .links{display:flex;gap:8px;flex-wrap:wrap}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.how div{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.how h3{margin:0 0 6px;font-size:16px}
+.how p{margin:0;color:var(--muted);font-size:14px}
+code{background:var(--blue-soft);padding:1px 6px;border-radius:6px;font-size:.9em}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);font-size:14px}
+.toggle{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:4px 8px;cursor:pointer;font:inherit;font-size:13px}
+@media (max-width:900px){ol.chain{grid-template-columns:1fr 1fr}.how{grid-template-columns:1fr}nav{display:none}}
+@media (max-width:520px){ol.chain{grid-template-columns:1fr}.wrap{padding:0 16px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="logo" href="#"><span class="dot"></span>ROSE explorer</a>
+  <nav><a href="#chain">The chain</a><a href="#explorer">Explorer</a><a href="#chapters">Notebooks</a><a href="#verified">How it is verified</a>
+    <a href="https://github.com/MHHamdan/rose-explorer" target="_blank" rel="noopener">GitHub</a></nav>
+  <button class="toggle" id="theme" aria-label="Toggle colour theme">◐</button>
+</div></header>
+
+<main>
+<section class="hero"><div class="wrap">
+  <span class="eyebrow">Generative AI, explained and verified</span>
+  <h1>How generative AI works,<br>one knob at a time.</h1>
+  <p class="lead">Every generative model, from a VAE to a large language model to a text-to-image system, must get
+  around one obstacle: the probability of the data is intractable. The route it takes fixes its objective, its
+  sampler and the evaluations it admits. Move the knobs below and watch the consequences, then open the notebooks
+  to see each equation derived and checked in code.</p>
+  <div class="cta"><a class="btn" href="#explorer">Open the explorer</a><a class="btn ghost" href="#chapters">Read the notebooks</a></div>
+  <div class="stats"><div><b>7</b>interactive demos</div><div><b>11</b>notebook chapters</div><div><b>205</b>paper equations covered</div><div><b>402</b>checks the notebooks run</div></div>
+</div></section>
+
+<section id="chain"><div class="wrap">
+  <h2>The ROSE chain</h2>
+  <p class="sub">The survey follows every model through the same five questions, in order. Each tab of the explorer and each notebook chapter sits on one of them.</p>
+  <ol class="chain">
+      <li class="stage"><span class="step">1</span><h3>Route</h3><p>How a model gets around the intractable likelihood: compute it exactly, bound it, or avoid it.</p>
+        <p class="tags">autoregressive · flows · VAEs · diffusion · GANs</p></li>
+      <li class="stage"><span class="step">2</span><h3>Objective</h3><p>The route fixes the loss and the divergence it minimises, and so which data the model covers.</p>
+        <p class="tags">forward KL · reverse KL · Jensen-Shannon · Wasserstein · Fisher</p></li>
+      <li class="stage"><span class="step">3</span><h3>Sampler</h3><p>The same trained weights can be sampled many ways; the sampler sets quality, diversity and cost.</p>
+        <p class="tags">greedy · top-p · Langevin · DDPM · DDIM · guidance</p></li>
+      <li class="stage"><span class="step">4</span><h3>Evaluation</h3><p>What a model can report decides which metrics are admissible and what they cannot see.</p>
+        <p class="tags">bits/dim · perplexity · FID · precision/recall · human judgments</p></li>
+      <li class="stage"><span class="step">5</span><h3>Systems</h3><p>Post-training, retrieval and agents recombine the routes; each stage is anchored to the last.</p>
+        <p class="tags">SFT · RLHF · DPO · GRPO · RAG · agents</p></li>
+  </ol>
+</div></section>
+
+<section id="explorer"><div class="wrap">
+  <h2>The explorer</h2>
+  <p class="sub">Seven interactive demos, one idea each, with the knobs that matter. Below is what each tab shows at its default settings, rendered from the app's own code; run the app to move the knobs.</p>
+  <div class="app-shell">
+    <div class="app-bar"><i></i><i></i><i></i><span>ROSE explorer · seven tabs, one knob each</span></div>
+    <div class="gallery">
+      <figure class="preview">
+        <img src="assets/preview_1.png" alt="Divergences: Forward KL (what maximum likelihood minimises): mean +0.00, sd 2.12, KL(p‖q) = 0.421 nats. It must put mass wherever the data are, so it spreads over both modes and puts mass between them where there are no data." loading="lazy">
+        <figcaption><b>Divergences</b> <span class="lead-tag">Route and objective: which divergence does training minimise?</span>
+          <p>Forward KL (what maximum likelihood minimises): mean +0.00, sd 2.12, KL(p‖q) = 0.421 nats. It must put mass wherever the data are, so it spreads over both modes and puts mass between them where there are no data.</p>
+          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/01_foundations_divergences.ipynb" target="_blank" rel="noopener">Chapter 1: Probability, entropy and divergences →</a></figcaption>
+      </figure>
+      <figure class="preview">
+        <img src="assets/preview_2.png" alt="Language-model decoding: Three continuations of &quot;the&quot; under temperature 1.00, top-k off, top-p 1.00:" loading="lazy">
+        <figcaption><b>Language-model decoding</b> <span class="lead-tag">Sampler: the same model, different decoding rules.</span>
+          <p>Three continuations of &quot;the&quot; under temperature 1.00, top-k off, top-p 1.00:</p>
+          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/04_autoregressive_models.ipynb" target="_blank" rel="noopener">Chapter 4: Autoregressive models →</a></figcaption>
+      </figure>
+      <figure class="preview">
+        <img src="assets/preview_3.png" alt="GAN critics: At shift 1.50: JS = 0.693 nats (max log 2 = 0.693), W1 = 1.500." loading="lazy">
+        <figcaption><b>GAN critics</b> <span class="lead-tag">Objective: what an adversarial critic measures.</span>
+          <p>At shift 1.50: JS = 0.693 nats (max log 2 = 0.693), W1 = 1.500.</p>
+          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/06_generative_adversarial_networks.ipynb" target="_blank" rel="noopener">Chapter 6: Generative adversarial networks →</a></figcaption>
+      </figure>
+      <figure class="preview">
+        <img src="assets/preview_4.png" alt="Score and Langevin: Share of samples in the right-hand well: 0.46 (the target has 0.50)." loading="lazy">
+        <figcaption><b>Score and Langevin</b> <span class="lead-tag">Sampler: sampling with only the score.</span>
+          <p>Share of samples in the right-hand well: 0.46 (the target has 0.50).</p>
+          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/07_energy_based_models_and_score_matching.ipynb" target="_blank" rel="noopener">Chapter 7: Energy-based models and score matching →</a></figcaption>
+      </figure>
+      <figure class="preview">
+        <img src="assets/preview_5.png" alt="Diffusion sampler: Samples within 3 sd of a mode: 97%; modes covered: 8/8; share in the upper half (the &#x27;class&#x27; that guidance favours): 40%." loading="lazy">
+        <figcaption><b>Diffusion sampler</b> <span class="lead-tag">Sampler: forward noising and reverse sampling.</span>
+          <p>Samples within 3 sd of a mode: 97%; modes covered: 8/8; share in the upper half (the &#x27;class&#x27; that guidance favours): 40%.</p>
+          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/09_discrete_diffusion_ddim_guidance_flow_matching.ipynb" target="_blank" rel="noopener">Chapter 9: DDPM, DDIM, guidance and flow matching →</a></figcaption>
+      </figure>
+      <figure class="preview">
+        <img src="assets/preview_6.png" alt="Post-training tilt: β = 0.50: KL to the reference 0.47 nats; probability of a correct answer 0.25 → 0.71; pass@16: 0.990 → 1.000." loading="lazy">
+        <figcaption><b>Post-training tilt</b> <span class="lead-tag">Systems: RLHF/DPO/GRPO as a tilt of the reference.</span>
+          <p>β = 0.50: KL to the reference 0.47 nats; probability of a correct answer 0.25 → 0.71; pass@16: 0.990 → 1.000.</p>
+          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/11_systems_post_training_agents.ipynb" target="_blank" rel="noopener">Chapter 11: Post-training, retrieval and agents →</a></figcaption>
+      </figure>
+      <figure class="preview">
+        <img src="assets/preview_7.png" alt="Evaluation metrics: At N = 500: FID 0.010, precision 0.98, recall 0.98." loading="lazy">
+        <figcaption><b>Evaluation metrics</b> <span class="lead-tag">Evaluation: what FID, precision and recall see.</span>
+          <p>At N = 500: FID 0.010, precision 0.98, recall 0.98.</p>
+          <a href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/10_evaluation_metrics.ipynb" target="_blank" rel="noopener">Chapter 10: Evaluation metrics →</a></figcaption>
+      </figure>
+    </div>
+    <div class="run">Run it yourself: <code>pip install -r app/requirements.txt && python app/app.py</code>
+      <span>· or deploy <code>app/</code> as a Hugging Face Space with <code>gradio deploy</code></span></div>
+  </div>
+</div></section>
+
+<section id="chapters"><div class="wrap">
+  <h2>Eleven notebook chapters</h2>
+  <p class="sub">Every equation in the survey and its supplement, explained twice, in plain words for a first encounter and as a refresher with assumptions and a derivation sketch, then verified in code. Each notebook runs on Colab as is; its last cell confirms that every check passed.</p>
+  <div class="grid">
+      <article class="card">
+        <div class="num">01</div>
+        <h3>Probability, entropy and divergences</h3>
+        <p>KL, Jensen-Shannon and Wasserstein; why forward KL covers modes and reverse KL seeks them.</p>
+        <div class="links"><a class="btn small" href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/01_foundations_divergences.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+          <a class="btn small ghost" href="https://github.com/MHHamdan/rose-explorer/blob/main/notebooks/01_foundations_divergences.ipynb" target="_blank" rel="noopener">View notebook</a></div>
+      </article>
+      <article class="card">
+        <div class="num">02</div>
+        <h3>Maximum likelihood, latent variables and Bayes</h3>
+        <p>Maximum likelihood is forward-KL minimisation; latent variables, Bayes&#x27; rule and EM.</p>
+        <div class="links"><a class="btn small" href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/02_likelihood_latents_bayes.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+          <a class="btn small ghost" href="https://github.com/MHHamdan/rose-explorer/blob/main/notebooks/02_likelihood_latents_bayes.ipynb" target="_blank" rel="noopener">View notebook</a></div>
+      </article>
+      <article class="card">
+        <div class="num">03</div>
+        <h3>Variational inference and VAEs</h3>
+        <p>The evidence lower bound, the reparameterisation trick, IWAE, beta-VAE and VQ-VAE.</p>
+        <div class="links"><a class="btn small" href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/03_variational_inference_vaes.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+          <a class="btn small ghost" href="https://github.com/MHHamdan/rose-explorer/blob/main/notebooks/03_variational_inference_vaes.ipynb" target="_blank" rel="noopener">View notebook</a></div>
+      </article>
+      <article class="card">
+        <div class="num">04</div>
+        <h3>Autoregressive models</h3>
+        <p>The chain rule, teacher forcing, KV caches, speculative decoding and perplexity.</p>
+        <div class="links"><a class="btn small" href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/04_autoregressive_models.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+          <a class="btn small ghost" href="https://github.com/MHHamdan/rose-explorer/blob/main/notebooks/04_autoregressive_models.ipynb" target="_blank" rel="noopener">View notebook</a></div>
+      </article>
+      <article class="card">
+        <div class="num">05</div>
+        <h3>Normalizing flows</h3>
+        <p>Exact likelihood by invertible maps: change of variables, coupling layers, dequantisation.</p>
+        <div class="links"><a class="btn small" href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/05_normalizing_flows.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+          <a class="btn small ghost" href="https://github.com/MHHamdan/rose-explorer/blob/main/notebooks/05_normalizing_flows.ipynb" target="_blank" rel="noopener">View notebook</a></div>
+      </article>
+      <article class="card">
+        <div class="num">06</div>
+        <h3>Generative adversarial networks</h3>
+        <p>The minimax game, Jensen-Shannon at the optimum, Wasserstein critics and penalties.</p>
+        <div class="links"><a class="btn small" href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/06_generative_adversarial_networks.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+          <a class="btn small ghost" href="https://github.com/MHHamdan/rose-explorer/blob/main/notebooks/06_generative_adversarial_networks.ipynb" target="_blank" rel="noopener">View notebook</a></div>
+      </article>
+      <article class="card">
+        <div class="num">07</div>
+        <h3>Energy-based models and score matching</h3>
+        <p>Unnormalised densities, score matching, denoising score matching and Langevin dynamics.</p>
+        <div class="links"><a class="btn small" href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/07_energy_based_models_and_score_matching.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+          <a class="btn small ghost" href="https://github.com/MHHamdan/rose-explorer/blob/main/notebooks/07_energy_based_models_and_score_matching.ipynb" target="_blank" rel="noopener">View notebook</a></div>
+      </article>
+      <article class="card">
+        <div class="num">08</div>
+        <h3>Continuous-time diffusion</h3>
+        <p>The forward SDE, its reversal, the probability-flow ODE and likelihood weighting.</p>
+        <div class="links"><a class="btn small" href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/08_continuous_time_diffusion.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+          <a class="btn small ghost" href="https://github.com/MHHamdan/rose-explorer/blob/main/notebooks/08_continuous_time_diffusion.ipynb" target="_blank" rel="noopener">View notebook</a></div>
+      </article>
+      <article class="card">
+        <div class="num">09</div>
+        <h3>DDPM, DDIM, guidance and flow matching</h3>
+        <p>The variational bound, noise prediction, the DDIM family, classifier-free guidance, flow matching.</p>
+        <div class="links"><a class="btn small" href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/09_discrete_diffusion_ddim_guidance_flow_matching.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+          <a class="btn small ghost" href="https://github.com/MHHamdan/rose-explorer/blob/main/notebooks/09_discrete_diffusion_ddim_guidance_flow_matching.ipynb" target="_blank" rel="noopener">View notebook</a></div>
+      </article>
+      <article class="card">
+        <div class="num">10</div>
+        <h3>Evaluation metrics</h3>
+        <p>Bits per dimension, FID and its bias, KID, precision and recall, CLIPScore, pairwise rankings.</p>
+        <div class="links"><a class="btn small" href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/10_evaluation_metrics.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+          <a class="btn small ghost" href="https://github.com/MHHamdan/rose-explorer/blob/main/notebooks/10_evaluation_metrics.ipynb" target="_blank" rel="noopener">View notebook</a></div>
+      </article>
+      <article class="card">
+        <div class="num">11</div>
+        <h3>Post-training, retrieval and agents</h3>
+        <p>SFT, Bradley-Terry, the KL-regularised tilt, DPO, pass@k, RAG, agents, model collapse.</p>
+        <div class="links"><a class="btn small" href="https://colab.research.google.com/github/MHHamdan/rose-explorer/blob/main/notebooks/11_systems_post_training_agents.ipynb" target="_blank" rel="noopener">Open in Colab</a>
+          <a class="btn small ghost" href="https://github.com/MHHamdan/rose-explorer/blob/main/notebooks/11_systems_post_training_agents.ipynb" target="_blank" rel="noopener">View notebook</a></div>
+      </article>
+  </div>
+</div></section>
+
+<section id="verified"><div class="wrap">
+  <h2>How it is verified</h2>
+  <div class="how">
+    <div><h3>Every equation has a check</h3><p>The 205 entries of the paper's equation registry are covered by 111 notebook entries and roughly 400 numeric or symbolic checks. A notebook fails loudly if any check fails.</p></div>
+    <div><h3>The notebooks are generated</h3><p>Each notebook is built from a Python module under <code>notebooks/src/</code>. The repository's gate rebuilds them, executes them on a CPU and fails if a committed notebook drifts.</p></div>
+    <div><h3>The explorer uses the same mathematics</h3><p>The demos compute their figures live from the equations the notebooks verify; the numbers under each figure come from the same computation.</p></div>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">Part of the open artefacts of the ROSE survey of generative models. Code under MIT, text under CC BY 4.0.
+  Source of this page: <code>site/build_site.py</code> (generated; do not edit <code>index.html</code> by hand).</div></footer>
+
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('theme');
+  try{var t=localStorage.getItem('rose-theme'); if(t) root.setAttribute('data-theme',t);}catch(e){}
+  btn.addEventListener('click',function(){
+    var dark = root.getAttribute('data-theme')==='dark' || (!root.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+    var next = dark ? 'light' : 'dark'; root.setAttribute('data-theme',next);
+    try{localStorage.setItem('rose-theme',next);}catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
